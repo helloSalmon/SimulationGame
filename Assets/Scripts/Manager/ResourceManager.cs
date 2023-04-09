@@ -6,8 +6,6 @@ public class ResourceManager : MonoBehaviour
 {
     static ResourceManager s_instance;
     static ResourceManager Instance { get { init(); return s_instance; } }
-    int time = 1;
-    GameObject test;
 
     void Start()
     {
@@ -16,16 +14,6 @@ public class ResourceManager : MonoBehaviour
 
     void Update()
     {
-        if (time == 1)
-        {
-            test = Instantiate("Cube");
-            
-        }
-        else if (time == 100)
-        {
-            Destroy(test);
-        }
-        ++time;
     }
 
     static void init()

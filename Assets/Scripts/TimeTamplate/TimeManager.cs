@@ -12,10 +12,12 @@ public class TimeManager : MonoBehaviour
         public Vector3 size;
     }
 
-    //컨테이너 수령/배송 이벤트의 컨테이너 갯수
+    //스케줄 클래스
     public class CargoEvent
     {
         public List<ContainerInfo> containers;
+        public float launchTime;
+        public TodayEventsType eventType;
     }
     
     //스케줄 이벤트 종류
@@ -29,11 +31,11 @@ public class TimeManager : MonoBehaviour
     //시간 관련 변수들
     public float mainTime;
     public float timeSpeed = 1.0f;
+    public float minTimeDistance;
+    public float maxTimeDistance;
 
     //스케줄 표
-    private List<float> schaduleTimeList;
-    private List<TodayEventsType> schaduleTypeList;
-    public List<CargoEvent> schduleContainerList;
+    public List<CargoEvent> schduleList;
     private float minTime = 5.0f;
 
     //컨테이너 관련 변수들
@@ -42,11 +44,13 @@ public class TimeManager : MonoBehaviour
     public List<Transform> getContainerLoc;                       //컨테이너가 생성되는 위치
     public List<GameObject> sendContainerLoc;                  //보낼 컨테이너를 저장할 홀더들 (옮겨진 컨테이너의 정보를 확인할 스크립트 필요)
     public List<GameObject> nowContainers;
+    public CargoEvent nowShip;
+    public List<CargoEvent> waitingShips;
 
     //UI
     public Text timeText;
 
-    private void Update()
+    private IEnumerator TimeGoing()
     {
         //배속에 맞게 시간을 돌림
         mainTime += Time.deltaTime * timeSpeed;
@@ -54,41 +58,45 @@ public class TimeManager : MonoBehaviour
         //mainTime을 60진법에 맞게 변환 (게임 시간 내 속도로 변환) 
 
         //schaduleList의 첫 번째 항목이 나올 시간이 되었는지 체크
-        if(schaduleTimeList[0] <= mainTime)
+        if(schduleList[0].launchTime <= mainTime)
         {
             //시간이 됐으면 스케줄 실행 함수에 옮기기
-            TodayEventsType nowEventType = schaduleTypeList[0];
-            CargoEvent nowEventCargos = schduleContainerList[0];
+            CargoEvent nowEventCargos = schduleList[0];
 
             //실행된 스케줄을 삭제
-            schaduleTimeList.RemoveAt(0);
-            schaduleTypeList.RemoveAt(0);
-            schduleContainerList.RemoveAt(0);
+            schduleList.RemoveAt(0);
 
             //스케줄 종류를 구분하고 그에 맞는 함수 실행
-            switch(nowEventType)
+            switch(nowEventCargos.eventType)
             {
                 case TodayEventsType.getCargo:
-                    GetCargoEvent(nowEventCargos);
+                    if(nowShip == null)
+                    {
+                        GetCargoEvent(nowEventCargos);
+                    }
+                    else
+                    {
+                        waitingShips.Add(nowEventCargos);
+                    }
                     break;
 
                 case TodayEventsType.sendCargo:
-                    GameObject sendCargo = new GameObject();
-
-                    //받은 정보(화물코드)와 일치하는 컨테이너 찾기
-                    foreach(GameObject g in nowContainers)
-                    {
-                        //g 안에 있는 코드와 nowEventCargos의 코드가 일치하면 sendCargo = g;
-                    }
-                    SendCargoEvent(sendCargo);
+                    SendCargoEvent(nowEventCargos.containers[0]); // 이거 CheckCargo로 바꾸어야 함
                     break;
             }
         }
+        yield return new WaitForSeconds (0.1f);
+    }
+
+    private IEnumerator WaitShip()
+    {
+        
     }
 
     //화물 수령 이벤트 함수
     public void GetCargoEvent(CargoEvent cargoEvent)
     {
+        
         int count = 0;
 
         //CargoEvent 안의 컨테이너들을 모두 생성해서 배치
@@ -140,10 +148,51 @@ public class TimeManager : MonoBehaviour
 
     //스케줄표 자동 생성
     public void CreateSchadule()
-    {
+    {        
+        int eventCount = 5;
+        float nowTimeStamp = 0;
+        
         //스케줄 간 최소 간격을 유지해서 생성
+        for (int i = 0; i < eventCount; i++)
+        {
+            //발생 타이밍 결정
+            nowTimeStamp += minTimeDistance + 2.0f;
+            
+            //보내는 건지 받는 건지 결정
+            todayEventsType = TodayEventsType.getCargo;
 
-        //스케줄 생성 시 CargoEvent에서 샤용할 컨테이너 목록을 생성해서 리스트에 저장(ContainerInfo 형태로)
-        //
+            //이벤트 생성
+            CargoEvent creatingEvent = new CargoEvent();
+            creatingEvent.launchTime = nowTimeStamp;
+            creatingEvent.eventType = todayEventsType;
+
+            //만약 화물 받기면 화물 생성
+            if(todayEventsType == TodayEventsType.getCargo)
+            {
+                int cargoCount = 3;
+
+                for(int i = 0; i < cargoCount; i++)
+                {
+                    ContainerInfo currentInfo = new ContainerInfo();
+                    currentInfo.code = 2000;
+
+                    creatingEvent.containers.Add(currentInfo);
+                }
+            }
+            //만약 화물 보내기면 있는 화물 중에서 선택
+            else if(todayEventsType == TodayEventsType.sendCargo)
+            {
+                GameObject currentCargo = nowContainers[0];
+                creatingEvent.containers.Add(currentCargo);               
+            }
+            //다 틀렸으면 에러 출력
+            else
+            {
+                Debug.Log("ERROR in CreateSchadule");
+            }
+
+            //생성된 이벤트를 이벤트 리스트에 저장
+            schduleList.Add(creatingEvent);
+        }
     }
 }

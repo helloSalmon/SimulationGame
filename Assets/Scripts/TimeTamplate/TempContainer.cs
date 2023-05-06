@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class TempContainer : MonoBehaviour
 {
-    public int code;
-    public Vector3 size;
+    public string code;
+    public Vector2 size;
 }

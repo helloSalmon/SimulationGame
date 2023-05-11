@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class TimeManager : MonoBehaviour
 {
@@ -33,6 +34,7 @@ public class TimeManager : MonoBehaviour
     public float timeSpeed = 1.0f;
     public float minTimeDistance = 5.0f;
     public float maxTime;
+    public float possibleTime;
 
     //스케줄 표
     public List<CargoEvent> schaduleList = new List<CargoEvent>();
@@ -47,8 +49,13 @@ public class TimeManager : MonoBehaviour
     public CargoEvent nowShip;
     public List<CargoEvent> waitingShips = new();
 
+    //점수 관련 변수들
+    private int nowScore;
+
     //UI
     public Text timeText;
+    public GameObject schaduleCalendar;
+    public UnityEngine.UI.Image basicCalendar;
 
     private void Start()
     {
@@ -56,6 +63,8 @@ public class TimeManager : MonoBehaviour
         
         StartCoroutine(TimeGoing());
         StartCoroutine(WaitShip());
+
+        nowScore = 0;
     }
 
     private IEnumerator TimeGoing()
@@ -75,6 +84,7 @@ public class TimeManager : MonoBehaviour
             mainTime += Time.deltaTime * timeSpeed;
 
             //mainTime을 60진법에 맞게 변환 (게임 시간 내 속도로 변환) 
+            timeText.text = "현재 시각 : " + mainTime.ToString();
 
             //schaduleList의 첫 번째 항목이 나올 시간이 되었는지 체크
             if (schaduleList.Count != 0 && schaduleList[0].launchTime <= mainTime)
@@ -110,16 +120,21 @@ public class TimeManager : MonoBehaviour
             }
             yield return null;
 
-            //보낼 컨테이너와 하역장에 내려진 화물이 일치하면 해당 화물 전송
             if(willSendCargo.Count != 0)
             {
                 foreach(CargoEvent listCargo in willSendCargo)
                 {
                     foreach(ContainerLocation location in sendContainerLoc)
                     {
-                        if(location.myContainer != null && listCargo.containers[0].code == location.myContainer.GetComponent<TempContainer>().code)
+                        //보낼 컨테이너와 하역장에 내려진 화물이 일치하면 해당 화물 전송
+                        if (location.myContainer != null && listCargo.containers[0].code == location.myContainer.GetComponent<TempContainer>().code)
                         {
                             SendCargoEvent(location.myContainer, listCargo);
+                            goto escapeSendSequence;
+                        }
+                        else if (location.myContainer != null && listCargo.containers[0].code != location.myContainer.GetComponent<TempContainer>().code)
+                        {
+                            Debug.Log("잘못된 컨테이너를 내렸습니다");
                             goto escapeSendSequence;
                         }
                     }
@@ -167,6 +182,7 @@ public class TimeManager : MonoBehaviour
 
             if (clearCount == getContainerLoc.Count)
             {
+                GetScore(100, nowShip.launchTime);
                 nowShip = null;
                 Debug.Log("Ship is Clear");
             }
@@ -193,7 +209,7 @@ public class TimeManager : MonoBehaviour
             count++;
         }
     }
-
+    
     //화물 배송 이벤트 함수 (실제 배송)
     public void SendCargoEvent(GameObject sendCargo, CargoEvent nowEvent)
     {
@@ -205,6 +221,8 @@ public class TimeManager : MonoBehaviour
 
         //컨테이너 완전 삭제
         Destroy(sendCargo);
+
+        GetScore(300, nowEvent.launchTime);
     }
 
     //컨테이너(화물) 생성 함수
@@ -219,17 +237,38 @@ public class TimeManager : MonoBehaviour
         return tempContainer.gameObject;
     }
 
+    //점수 계산 함수(시간이 얼마나 지났냐에 따라서 점수 가감 결정)
+    private void GetScore(int originalScore, float originalTime)
+    {
+        if(mainTime <= originalTime + possibleTime)
+        {
+            nowScore += originalScore;
+        }
+        else if(mainTime <= originalTime + possibleTime * 2)
+        {
+            nowScore += originalScore / 2;
+        }
+        else
+        {
+            nowScore -= originalScore / 2;
+        }
+    }
+
     //스케줄표 자동 생성
     public void CreateSchadule()
     {        
         int eventCount = 5;
         float nowTimeStamp = 0;
-        
+        string nowSchaduleString = "작업 종류 : ";
+
         //스케줄 간 최소 간격을 유지해서 생성
         for (int i = 0; i < eventCount; i++)
         {
             //발생 타이밍 결정
             nowTimeStamp += minTimeDistance + Random.Range(0.1f, 2.0f);
+
+            nowSchaduleString = "작업 시간 : " + nowTimeStamp.ToString();
+            nowSchaduleString += "작업 종류 : ";
 
             //보내는 이벤트인지 받는 이벤트인지 결정
             if (Random.Range(1, 3) == 1 || tempNowCargo.Count == 0)
@@ -250,6 +289,9 @@ public class TimeManager : MonoBehaviour
             //만약 화물 받기면 화물 생성
             if(todayEventsType == TodayEventsType.getCargo)
             {
+                nowSchaduleString += "화물 수령 \n";
+                nowSchaduleString += "받는 컨테이너의 코드 목록 \n";
+                
                 int cargoCount = 3;
 
                 for(int n = 0; n < cargoCount; n++)
@@ -262,11 +304,16 @@ public class TimeManager : MonoBehaviour
                     tempNowCargo.Add(currentInfo);
 
                     creatingEvent.containers.Add(currentInfo);
+
+                    nowSchaduleString += currentInfo.code.ToString() + " / ";
                 }
             }
             //만약 화물 보내기면 있는 화물 중에서 선택
             else if(todayEventsType == TodayEventsType.sendCargo)
             {
+                nowSchaduleString += "화물 배송 \n";
+                nowSchaduleString += "보낼 컨테이너 코드 : ";
+                
                 ContainerInfo currentInfo = new ContainerInfo();
 
                 //현재 컨테이너 야드에 있는 컨테이너를 배송 대상으로 지정할 때 
@@ -281,9 +328,11 @@ public class TimeManager : MonoBehaviour
                 else
                 {
                     currentInfo = tempNowCargo[Random.Range(0, tempNowCargo.Count)];
-                }                                
+                }
 
-                creatingEvent.containers.Add(currentInfo);               
+                creatingEvent.containers.Add(currentInfo);
+
+                nowSchaduleString += currentInfo.code.ToString();
             }
             //다 틀렸으면 에러 출력
             else
@@ -293,6 +342,14 @@ public class TimeManager : MonoBehaviour
 
             //생성된 이벤트를 이벤트 리스트에 저장
             schaduleList.Add(creatingEvent);
+
+            //유저가 인게임에서 볼 수 있는 형태의 스케줄표 표현
+            UnityEngine.UI.Image nowCalender = Instantiate(basicCalendar);
+            Text nowSchaduleText = nowCalender.GetComponentInChildren<Text>();
+
+            nowSchaduleText.text = nowSchaduleString;
+            nowCalender.transform.SetParent(basicCalendar.transform.parent.GetChild(0), false);
+            nowCalender.transform.localPosition = new Vector3(0, -i * nowCalender.rectTransform.sizeDelta.y, 0);
         }
     }
 }

@@ -9,53 +9,52 @@ public class TimeManager : MonoBehaviour
     //컨테이너 정보
     public class ContainerInfo
     {
-        public string code;
-        public Vector2 size;
+        public string code;                             //컨테이너 코드번호
+        public Vector2 size;                            //컨테이너 크기
     }
 
     //스케줄 클래스
     public class CargoEvent
     {
-        public List<ContainerInfo> containers;
-        public float launchTime;
-        public TodayEventsType eventType;
+        public List<ContainerInfo> containers;      //스케줄에 관련된 컨테이너 목록
+        public float launchTime;                        //스케줄이 오는 시간
+        public TodayEventsType eventType;         //스케줄 이벤트 종류
     }
     
     //스케줄 이벤트 종류
     public enum TodayEventsType
     {
-        getCargo,
-        sendCargo
+        getCargo,        //컨테이너 수령  
+        sendCargo      //컨테이너 배송
     }
     private TodayEventsType todayEventsType;
     
     //시간 관련 변수들
-    public float mainTime;
-    public float timeSpeed = 1.0f;
-    public float minTimeDistance = 5.0f;
-    public float maxTime;
-    public float possibleTime;
+    public float mainTime;                      //현재 일과 중 흘러가는 시간
+    public float timeSpeed = 1.0f;            //시간 배속
+    public float minTimeDistance = 5.0f;    //스케줄의 이벤트 간 최소 간격
+    public float maxTime;                       //현재 일과의 종료 시간
+    public float possibleTime;                  //허용될 수 있는 스케줄 상 이벤트 수행 시간
 
     //스케줄 표
-    public List<CargoEvent> schaduleList = new List<CargoEvent>();
-    public List<CargoEvent> willSendCargo = new();
+    public List<CargoEvent> schaduleList = new();       //대기중인 스케줄 목록
+    public List<CargoEvent> willSendCargo = new();    //컨테이너 배송 스케줄 목록
 
     //컨테이너 관련 변수들
-    public GameObject basicContainer;                                                     //기본 컨테이너
-    public List<ContainerLocation> getContainerLoc;                                   //컨테이너가 생성되는 위치
-    public List<ContainerLocation> sendContainerLoc;                                 //보낼 컨테이너를 저장할 홀더들 (옮겨진 컨테이너의 정보를 확인할 스크립트 필요)
-    public List<GameObject> nowContainers = new List<GameObject>();
-    private List<ContainerInfo> tempNowCargo = new();                              //컨테이너 보내기 이벤트 생성 용 임시 컨테이너 리스트
-    public CargoEvent nowShip;
-    public List<CargoEvent> waitingShips = new();
+    public GameObject basicContainer;                           //기본 컨테이너
+    public List<ContainerLocation> getContainerLoc;         //컨테이너가 생성되는 위치
+    public List<ContainerLocation> sendContainerLoc;       //보낼 컨테이너를 저장할 홀더들 (옮겨진 컨테이너의 정보를 확인할 스크립트 필요)
+    public List<GameObject> nowContainers = new();       //현재 컨테이너 야드에 적재된 화물 목록
+    public CargoEvent nowShip;                                   //현재 컨테이너를 내리고 있는 화물선 (현재 진행 중인 컨테이너 수령 이벤트)
+    public List<CargoEvent> waitingShips = new();           //뒤에서 대기 중인 화물선 (대기 중인 컨테이너 수령 이벤트)
 
     //점수 관련 변수들
-    private int nowScore;
+    private int nowScore;        //현재 일과의 점수
 
     //UI
-    public Text timeText;
-    public GameObject schaduleCalendar;
-    public UnityEngine.UI.Image basicCalendar;
+    public Text timeText;                                   //현재 시각을 표시하는 텍스트
+    public GameObject schaduleCalendar;             //유저가 보는 스케줄 표
+    public UnityEngine.UI.Image basicCalendar;      //스케줄 표 생성에 사용되는 기본 스케줄 표 양식
 
     private void Start()
     {
@@ -67,6 +66,7 @@ public class TimeManager : MonoBehaviour
         nowScore = 0;
     }
 
+    //일과 진행의 주축이 되는 함수
     private IEnumerator TimeGoing()
     {
         while (true)
@@ -120,6 +120,7 @@ public class TimeManager : MonoBehaviour
             }
             yield return null;
 
+            //화물을 보낼 수 있는 지 확인하는 조건문
             if(willSendCargo.Count != 0)
             {
                 foreach(CargoEvent listCargo in willSendCargo)
@@ -144,6 +145,7 @@ public class TimeManager : MonoBehaviour
         }
     }
 
+    //대기하고 있는 배(화물선)가 있는 경우 돌아가는 함수
     private IEnumerator WaitShip()
     {
         while (true)
@@ -260,6 +262,7 @@ public class TimeManager : MonoBehaviour
         int eventCount = 5;
         float nowTimeStamp = 0;
         string nowSchaduleString = "작업 종류 : ";
+        List<ContainerInfo> tempNowCargo = new();                              //컨테이너 보내기 이벤트 생성 용 임시 컨테이너 리스트
 
         //스케줄 간 최소 간격을 유지해서 생성
         for (int i = 0; i < eventCount; i++)

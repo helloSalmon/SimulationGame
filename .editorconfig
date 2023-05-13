@@ -1,10 +1,11 @@
-# .editorconfig에 대해 자세히 알아보려면 다음을 참조하세요. https://aka.ms/editorconfigdocs
+# top-most EditorConfig file
+root = true
 
-# All files
+# Unix-style newlines with a newline ending every file 
 [*]
-indent_style = space
 charset = utf-8
-
-# Xml files
-[*.xml]
-indent_size = 2
+end_of_line = lf
+insert_final_newline = true
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true

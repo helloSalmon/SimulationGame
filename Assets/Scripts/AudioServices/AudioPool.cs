@@ -5,40 +5,40 @@ using UnityEngine.Pool;
 
 
 /// <summary>
-/// ¿ÀºêÁ§Æ® Ç®À» »ç¿ëÇØ <see cref="AudioSource">AudioSource</see>ÀÇ »ý¼º, ¼Ò¸êÀ» Á¦¾îÇÕ´Ï´Ù.
+/// ì˜¤ë¸Œì íŠ¸ í’€ì„ ì‚¬ìš©í•´ <see cref="AudioSource">AudioSource</see>ì˜ ìƒì„±, ì†Œë©¸ì„ ì œì–´í•©ë‹ˆë‹¤.
 /// </summary>
 public interface IAudioPool
 {
     /// <summary>
-    /// ¸ðµç À§Ä¡¿¡¼­ µ¿ÀÏÇÑ À½·®À¸·Î µéÀ» ¼ö ÀÖ´Â ¿Àµð¿À¸¦ Àç»ýÇÕ´Ï´Ù.
+    /// ëª¨ë“  ìœ„ì¹˜ì—ì„œ ë™ì¼í•œ ìŒëŸ‰ìœ¼ë¡œ ë“¤ì„ ìˆ˜ ìžˆëŠ” ì˜¤ë””ì˜¤ë¥¼ ìž¬ìƒí•©ë‹ˆë‹¤.
     /// </summary>
-    /// <param name="autoRemove">Àç»ýÁßÀÎ ¿Àµð¿À°¡ ³¡³ª¸é ÀÚµ¿À¸·Î ¼Ò¸êµÉ Áö ¼±ÅÃÇÕ´Ï´Ù.</param>
-    /// <param name="onEnd">Àç»ýÁßÀÎ ¿Àµð¿À°¡ ³¡³ª¸é È£ÃâµË´Ï´Ù.</param>
-    /// <returns>Pool·Î ¹ÝÈ¯ÇÏ´Â Dispose ÇÔ¼ö¸¦ ±¸ÇöÇÏ´Â Disposable</returns>
+    /// <param name="autoRemove">ìž¬ìƒì¤‘ì¸ ì˜¤ë””ì˜¤ê°€ ëë‚˜ë©´ ìžë™ìœ¼ë¡œ ì†Œë©¸ë  ì§€ ì„ íƒí•©ë‹ˆë‹¤.</param>
+    /// <param name="onEnd">ìž¬ìƒì¤‘ì¸ ì˜¤ë””ì˜¤ê°€ ëë‚˜ë©´ í˜¸ì¶œë©ë‹ˆë‹¤.</param>
+    /// <returns>Poolë¡œ ë°˜í™˜í•˜ëŠ” Dispose í•¨ìˆ˜ë¥¼ êµ¬í˜„í•˜ëŠ” Disposable</returns>
     IDisposable PlayGlobalAudio(AudioClip clip, bool autoRemove = true, Action onEnd = null);
 
 
     /// <summary>
-    /// À§Ä¡¿¡ µû¶ó À½·®ÀÌ ´Þ¶óÁö´Â ¿Àµð¿À¸¦ ¸ñÇ¥ À§Ä¡¿¡ »ý¼ºÇÏ°í Àç»ýÇÕ´Ï´Ù.
+    /// ìœ„ì¹˜ì— ë”°ë¼ ìŒëŸ‰ì´ ë‹¬ë¼ì§€ëŠ” ì˜¤ë””ì˜¤ë¥¼ ëª©í‘œ ìœ„ì¹˜ì— ìƒì„±í•˜ê³  ìž¬ìƒí•©ë‹ˆë‹¤.
     /// </summary>
-    /// <param name="autoRemove">Àç»ýÁßÀÎ ¿Àµð¿À°¡ ³¡³ª¸é ÀÚµ¿À¸·Î ¼Ò¸êµÉ Áö ¼±ÅÃÇÕ´Ï´Ù.</param>
-    /// <param name="onEnd">Àç»ýÁßÀÎ ¿Àµð¿À°¡ ³¡³ª¸é È£ÃâµË´Ï´Ù.</param>
-    /// <returns>Pool·Î ¹ÝÈ¯ÇÏ´Â Dispose ÇÔ¼ö¸¦ ±¸ÇöÇÏ´Â Disposable</returns>
+    /// <param name="autoRemove">ìž¬ìƒì¤‘ì¸ ì˜¤ë””ì˜¤ê°€ ëë‚˜ë©´ ìžë™ìœ¼ë¡œ ì†Œë©¸ë  ì§€ ì„ íƒí•©ë‹ˆë‹¤.</param>
+    /// <param name="onEnd">ìž¬ìƒì¤‘ì¸ ì˜¤ë””ì˜¤ê°€ ëë‚˜ë©´ í˜¸ì¶œë©ë‹ˆë‹¤.</param>
+    /// <returns>Poolë¡œ ë°˜í™˜í•˜ëŠ” Dispose í•¨ìˆ˜ë¥¼ êµ¬í˜„í•˜ëŠ” Disposable</returns>
     IDisposable PlayLocalAudio(AudioClip clip, Vector3 position, bool autoRemove = true, Action onEnd = null);
 
 
     /// <summary>
-    /// À§Ä¡¿¡ µû¶ó À½·®ÀÌ ´Þ¶óÁö´Â ¿Àµð¿À¸¦ ¸ñÇ¥ ´ë»óÀ» ºÎ¸ð·Î ¼±ÅÃÇÏ°í Àç»ýÇÕ´Ï´Ù.
+    /// ìœ„ì¹˜ì— ë”°ë¼ ìŒëŸ‰ì´ ë‹¬ë¼ì§€ëŠ” ì˜¤ë””ì˜¤ë¥¼ ëª©í‘œ ëŒ€ìƒì„ ë¶€ëª¨ë¡œ ì„ íƒí•˜ê³  ìž¬ìƒí•©ë‹ˆë‹¤.
     /// </summary>
-    /// <param name="autoRemove">Àç»ýÁßÀÎ ¿Àµð¿À°¡ ³¡³ª¸é ÀÚµ¿À¸·Î ¼Ò¸êµÉ Áö ¼±ÅÃÇÕ´Ï´Ù.</param>
-    /// <param name="onEnd">Àç»ýÁßÀÎ ¿Àµð¿À°¡ ³¡³ª¸é È£ÃâµË´Ï´Ù.</param>
-    /// <returns>Pool·Î ¹ÝÈ¯ÇÏ´Â Dispose ÇÔ¼ö¸¦ ±¸ÇöÇÏ´Â Disposable</returns>
+    /// <param name="autoRemove">ìž¬ìƒì¤‘ì¸ ì˜¤ë””ì˜¤ê°€ ëë‚˜ë©´ ìžë™ìœ¼ë¡œ ì†Œë©¸ë  ì§€ ì„ íƒí•©ë‹ˆë‹¤.</param>
+    /// <param name="onEnd">ìž¬ìƒì¤‘ì¸ ì˜¤ë””ì˜¤ê°€ ëë‚˜ë©´ í˜¸ì¶œë©ë‹ˆë‹¤.</param>
+    /// <returns>Poolë¡œ ë°˜í™˜í•˜ëŠ” Dispose í•¨ìˆ˜ë¥¼ êµ¬í˜„í•˜ëŠ” Disposable</returns>
     IDisposable PlayLocalAudio(AudioClip clip, Transform parent, bool autoRemove = true, Action onEnd = null);
 }
 
 
 /// <summary>
-/// ¿ÀºêÁ§Æ® Ç®À» »ç¿ëÇØ <see cref="AudioSource">AudioSource</see>ÀÇ »ý¼º, ¼Ò¸êÀ» Á¦¾îÇÕ´Ï´Ù.
+/// ì˜¤ë¸Œì íŠ¸ í’€ì„ ì‚¬ìš©í•´ <see cref="AudioSource">AudioSource</see>ì˜ ìƒì„±, ì†Œë©¸ì„ ì œì–´í•©ë‹ˆë‹¤.
 /// </summary>
 public class AudioPool : IAudioPool
 {
@@ -142,9 +142,9 @@ public class AudioPool : IAudioPool
 
 
     /// <summary>
-    /// À§Ä¡¿¡ µû¶ó À½·®ÀÌ ´Þ¶óÁö´Â ¿Àµð¿À¸¦ Àç»ýÇÕ´Ï´Ù.
+    /// ìœ„ì¹˜ì— ë”°ë¼ ìŒëŸ‰ì´ ë‹¬ë¼ì§€ëŠ” ì˜¤ë””ì˜¤ë¥¼ ìž¬ìƒí•©ë‹ˆë‹¤.
     /// </summary>
-    /// <param name="onEnd"><see cref="AudioSource.isPlaying">AudioSource.isPlaying</see>ÀÌ false·Î º¯ÇÒ ¶§ È£ÃâµË´Ï´Ù.</param>
+    /// <param name="onEnd"><see cref="AudioSource.isPlaying">AudioSource.isPlaying</see>ì´ falseë¡œ ë³€í•  ë•Œ í˜¸ì¶œë©ë‹ˆë‹¤.</param>
     private AudioElement PlayLocalAudio(AudioClip clip, bool autoRemove, Action onEnd)
     {
         var newElement = localAudioPool.Get();
@@ -157,11 +157,11 @@ public class AudioPool : IAudioPool
 
 
     /// <summary>
-    /// Àç»ýÁßÀÎ ¿Àµð¿À°¡ ³¡³ª¸é element¸¦ ¼Ò¸ê½ÃÅ°°í onEnd ÀÌº¥Æ®¸¦ ¹ß»ýÇÏ´Â ÄÚ·çÆ¾À» »ý¼ºÇÕ´Ï´Ù.
+    /// ìž¬ìƒì¤‘ì¸ ì˜¤ë””ì˜¤ê°€ ëë‚˜ë©´ elementë¥¼ ì†Œë©¸ì‹œí‚¤ê³  onEnd ì´ë²¤íŠ¸ë¥¼ ë°œìƒí•˜ëŠ” ì½”ë£¨í‹´ì„ ìƒì„±í•©ë‹ˆë‹¤.
     /// </summary>
     private IEnumerator AudioElementEndCheck(AudioElement element, bool autoRemove, Action onEnd)
     {
-        // AudioSource°¡ Á¾·áµÉ ¶§±îÁö ´ë±â
+        // AudioSourceê°€ ì¢…ë£Œë  ë•Œê¹Œì§€ ëŒ€ê¸°
         yield return new WaitUntil(() => !element.source.isPlaying);
 
         if (autoRemove)
@@ -195,10 +195,10 @@ public class AudioPool : IAudioPool
 
 
     /// <summary>
-    /// globalAudioPoolÀÌ »õ·Î¿î Element¸¦ »ý¼ºÇÏ´Â ÇÔ¼öÀÔ´Ï´Ù.
+    /// globalAudioPoolì´ ìƒˆë¡œìš´ Elementë¥¼ ìƒì„±í•˜ëŠ” í•¨ìˆ˜ìž…ë‹ˆë‹¤.
     /// <para>
-    /// °æ°í: ObjectPool¿¡¼­ ²¨³»´Â ÀÛ¾÷ÀÌ ¾Æ´Ñ PoolÀ» ÃÊ±âÈ­ÇÏ´Â µ¥¿¡ »ç¿ëµÇ´Â ÇÔ¼öÀÔ´Ï´Ù.
-    /// ObjectPool¿¡¼­ »ç¿ë °¡´ÉÇÑ ¿ÀºêÁ§Æ®¸¦ ²¨³»·Á¸é <see cref="ObjectPool{T}.Get">ObjectPool.Get()</see> ÇÔ¼ö¸¦ ÀÌ¿ëÇÏ¼¼¿ä.
+    /// ê²½ê³ : ObjectPoolì—ì„œ êº¼ë‚´ëŠ” ìž‘ì—…ì´ ì•„ë‹Œ Poolì„ ì´ˆê¸°í™”í•˜ëŠ” ë°ì— ì‚¬ìš©ë˜ëŠ” í•¨ìˆ˜ìž…ë‹ˆë‹¤.
+    /// ObjectPoolì—ì„œ ì‚¬ìš© ê°€ëŠ¥í•œ ì˜¤ë¸Œì íŠ¸ë¥¼ êº¼ë‚´ë ¤ë©´ <see cref="ObjectPool{T}.Get">ObjectPool.Get()</see> í•¨ìˆ˜ë¥¼ ì´ìš©í•˜ì„¸ìš”.
     /// </para>
     /// </summary>
     private AudioElement CreateGlobalAudioElement()
@@ -216,10 +216,10 @@ public class AudioPool : IAudioPool
 
 
     /// <summary>
-    /// localAudioPoolÀÌ »õ·Î¿î Element¸¦ »ý¼ºÇÏ´Â ÇÔ¼öÀÔ´Ï´Ù.
+    /// localAudioPoolì´ ìƒˆë¡œìš´ Elementë¥¼ ìƒì„±í•˜ëŠ” í•¨ìˆ˜ìž…ë‹ˆë‹¤.
     /// <para>
-    /// °æ°í: ObjectPool¿¡¼­ ²¨³»´Â ÀÛ¾÷ÀÌ ¾Æ´Ñ PoolÀ» ÃÊ±âÈ­ÇÏ´Â µ¥¿¡ »ç¿ëµÇ´Â ÇÔ¼öÀÔ´Ï´Ù.
-    /// ObjectPool¿¡¼­ »ç¿ë °¡´ÉÇÑ ¿ÀºêÁ§Æ®¸¦ ²¨³»·Á¸é <see cref="ObjectPool{T}.Get">ObjectPool.Get()</see> ÇÔ¼ö¸¦ ÀÌ¿ëÇÏ¼¼¿ä.
+    /// ê²½ê³ : ObjectPoolì—ì„œ êº¼ë‚´ëŠ” ìž‘ì—…ì´ ì•„ë‹Œ Poolì„ ì´ˆê¸°í™”í•˜ëŠ” ë°ì— ì‚¬ìš©ë˜ëŠ” í•¨ìˆ˜ìž…ë‹ˆë‹¤.
+    /// ObjectPoolì—ì„œ ì‚¬ìš© ê°€ëŠ¥í•œ ì˜¤ë¸Œì íŠ¸ë¥¼ êº¼ë‚´ë ¤ë©´ <see cref="ObjectPool{T}.Get">ObjectPool.Get()</see> í•¨ìˆ˜ë¥¼ ì´ìš©í•˜ì„¸ìš”.
     /// </para>
     /// </summary>
     private AudioElement CreateLocalAudioElement()

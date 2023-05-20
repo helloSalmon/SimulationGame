@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ResourceManager : MonoBehaviour
 {
     static ResourceManager s_instance;
-    static ResourceManager Instance { get { init(); return s_instance; } }
+    public static ResourceManager Instance { get { init(); return s_instance; } }
+
+    Dictionary<string, GameObject> _cache = new Dictionary<string, GameObject>();
 
     void Start()
     {
@@ -39,13 +42,20 @@ public class ResourceManager : MonoBehaviour
 
     public GameObject Instantiate(string path, Transform parent = null)
     {
-        GameObject prefab = Load<GameObject>($"Prefabs/{path}");
-        if (prefab == null)
+        if (!_cache.ContainsKey(path))
         {
-            Debug.Log($"Failed to load prefab : {path}");
-            return null;
+            GameObject prefab = Resources.Load<GameObject>($"Prefabs/{path}");
+            if (prefab == null)
+            {
+                Debug.Log($"Failed to load prefab : {path}");
+                return null;
+            }
+            _cache[path] = prefab;
         }
-        return Object.Instantiate(prefab, parent);
+        
+        GameObject go = Object.Instantiate(_cache[path], parent);
+        go.name = path;
+        return go;
     }
 
     public void Destroy(GameObject go)

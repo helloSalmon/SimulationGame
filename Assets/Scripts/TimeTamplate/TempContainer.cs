@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TempContainer : MonoBehaviour
+public class TempContainer : MonoBehaviour, IContainerInfo
 {
-    public string code;
-    public Vector2 size;
+    public string Code { get; set; }
+    public Vector2 Size { get; set; }
 }

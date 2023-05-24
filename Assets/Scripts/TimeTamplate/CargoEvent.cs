@@ -8,6 +8,23 @@ public enum CargoEventType
     Delievering      //컨테이너 배송
 }
 
+public class ContainerCode
+{
+    static HashSet<string> _codeSet = new HashSet<string>();
+    public static string Make()
+    {
+        string code = Random.Range(1000, 9999).ToString();
+        while (_codeSet.Contains(code))
+            code = Random.Range(1000, 9999).ToString();
+        _codeSet.Add(code);
+        return code;
+    }
+    public static void Remove(string code)
+    {
+        _codeSet.Remove(code);
+    }
+}
+
 public class CargoEvent
 {
     public List<ContainerInfo> containers;      //스케줄에 관련된 컨테이너 목록
@@ -34,7 +51,7 @@ public class CargoEvent
             for (int n = 0; n < cargoCount; n++)
             {
                 ContainerInfo currentInfo = new ContainerInfo();
-                currentInfo.Code = Random.Range(1000, 9999).ToString(); //중복되는 코드 생성하지 않는 기능 필요
+                currentInfo.Code = ContainerCode.Make(); //중복되는 코드 생성하지 않는 기능 필요
                 currentInfo.Size = new Vector2(2, 1);
 
                 //임시 리스트에 추가

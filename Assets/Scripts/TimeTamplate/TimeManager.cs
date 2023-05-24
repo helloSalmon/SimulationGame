@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -53,7 +54,7 @@ public class TimeManager : MonoBehaviour
         _ship = new Ship();
         _schedule = new Schedule(basicCalendar);
         _schedule.CreateScheduleList();
-        
+
         StartCoroutine(TimeGoing());
         StartCoroutine(CheckShipsWaiting());
 
@@ -161,6 +162,9 @@ public class TimeManager : MonoBehaviour
     {
         while (true)
         {
+            if (_ship.currentShip == null)
+                yield return null;
+
             int clearCount = 0;
 
             foreach (ContainerLocation location in containerSpawnLocations)
@@ -206,6 +210,7 @@ public class TimeManager : MonoBehaviour
     public void HandleDeliveringContainers(GameObject container, CargoEvent cargoEvent)
     {
         Debug.Log("배송 완료된 컨테이너 번호 : " + cargoEvent.containers[0].Code);
+        ContainerCode.Remove(cargoEvent.containers[0].Code);
 
         //현재 컨테이너 목록에서 삭제
         _schedule.loadedContainersInYard.Remove(container);

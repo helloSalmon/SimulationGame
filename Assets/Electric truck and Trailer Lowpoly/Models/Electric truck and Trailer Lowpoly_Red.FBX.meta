@@ -1,0 +1,183 @@
+fileFormatVersion: 2
+guid: 82ab07b9c21115c408d893bbebb95cb1
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: //RootNode
+    100002: Red_Electric Trailer Lowpoly
+    100004: Red_Electric Trailer Wheel_BL1
+    100006: Red_Electric Trailer Wheel_BL2
+    100008: Red_Electric Trailer Wheel_BR1
+    100010: Red_Electric Trailer Wheel_BR2
+    100012: Red_Electric truck_Blue
+    100014: Red_Electric truck_Blue_Wheel_BL1
+    100016: Red_Electric truck_Blue_Wheel_BL2
+    100018: Red_Electric truck_Blue_Wheel_BR1
+    100020: Red_Electric truck_Blue_Wheel_BR2
+    100022: Red_Electric truck_Blue_Wheel_FL
+    100024: Red_Electric truck_Blue_Wheel_FR
+    400000: //RootNode
+    400002: Red_Electric Trailer Lowpoly
+    400004: Red_Electric Trailer Wheel_BL1
+    400006: Red_Electric Trailer Wheel_BL2
+    400008: Red_Electric Trailer Wheel_BR1
+    400010: Red_Electric Trailer Wheel_BR2
+    400012: Red_Electric truck_Blue
+    400014: Red_Electric truck_Blue_Wheel_BL1
+    400016: Red_Electric truck_Blue_Wheel_BL2
+    400018: Red_Electric truck_Blue_Wheel_BR1
+    400020: Red_Electric truck_Blue_Wheel_BR2
+    400022: Red_Electric truck_Blue_Wheel_FL
+    400024: Red_Electric truck_Blue_Wheel_FR
+    2100000: Electric truck and Trailer Lowpoly_Red_Map
+    2100002: Light_05
+    2100004: Light_02
+    2100006: Light_03
+    2100008: Light_04
+    2300000: Red_Electric Trailer Lowpoly
+    2300002: Red_Electric Trailer Wheel_BL1
+    2300004: Red_Electric Trailer Wheel_BL2
+    2300006: Red_Electric Trailer Wheel_BR1
+    2300008: Red_Electric Trailer Wheel_BR2
+    2300010: Red_Electric truck_Blue
+    2300012: Red_Electric truck_Blue_Wheel_BL1
+    2300014: Red_Electric truck_Blue_Wheel_BL2
+    2300016: Red_Electric truck_Blue_Wheel_BR1
+    2300018: Red_Electric truck_Blue_Wheel_BR2
+    2300020: Red_Electric truck_Blue_Wheel_FL
+    2300022: Red_Electric truck_Blue_Wheel_FR
+    3300000: Red_Electric Trailer Lowpoly
+    3300002: Red_Electric Trailer Wheel_BL1
+    3300004: Red_Electric Trailer Wheel_BL2
+    3300006: Red_Electric Trailer Wheel_BR1
+    3300008: Red_Electric Trailer Wheel_BR2
+    3300010: Red_Electric truck_Blue
+    3300012: Red_Electric truck_Blue_Wheel_BL1
+    3300014: Red_Electric truck_Blue_Wheel_BL2
+    3300016: Red_Electric truck_Blue_Wheel_BR1
+    3300018: Red_Electric truck_Blue_Wheel_BR2
+    3300020: Red_Electric truck_Blue_Wheel_FL
+    3300022: Red_Electric truck_Blue_Wheel_FR
+    4300000: Red_Electric Trailer Lowpoly
+    4300002: Red_Electric Trailer Wheel_BR2
+    4300004: Red_Electric Trailer Wheel_BR1
+    4300006: Red_Electric Trailer Wheel_BL2
+    4300008: Red_Electric Trailer Wheel_BL1
+    4300010: Red_Electric truck_Blue
+    4300012: Red_Electric truck_Blue_Wheel_BL1
+    4300014: Red_Electric truck_Blue_Wheel_BL2
+    4300016: Red_Electric truck_Blue_Wheel_BR1
+    4300018: Red_Electric truck_Blue_Wheel_BR2
+    4300020: Red_Electric truck_Blue_Wheel_FL
+    4300022: Red_Electric truck_Blue_Wheel_FR
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Electric truck and Trailer Lowpoly_Red_Map
+    second: {fileID: 2100000, guid: c87ceda7fae82834f9ad94c92ff81613, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Light_02
+    second: {fileID: 2100000, guid: 9cca43a972200034b82c7c4858842fee, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Light_03
+    second: {fileID: 2100000, guid: 0041df1ff8a8a914fa31bfd095a22656, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Light_04
+    second: {fileID: 2100000, guid: 49c1f00e52d067c429f78d364a7acf3a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Light_05
+    second: {fileID: 2100000, guid: 2ccbdae1057bf5e498d10355f9c29ce2, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

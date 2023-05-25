@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 
 public class PlaceableObject : MonoBehaviour
@@ -18,7 +19,7 @@ public class PlaceableObject : MonoBehaviour
 
     [field: SerializeField]
     public Vector3Int Size { get; private set; } = Vector3Int.one;
-
+    public Func<bool> CanRemove = () => true;
 
     public static Direction GetNextDirection(Direction direction)
     {

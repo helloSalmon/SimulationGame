@@ -18,6 +18,7 @@ public class VoxelBuildingSystem : MonoBehaviour
         }
 
         placeableObject.Place(Buffer.vector3IntBuffer);
+        placeableObject.CanRemove = () => CanRemove(placeableObject, voxel);
     }
 
     public bool CanBuild(Voxel<VoxelObject> voxel, PlaceableObject placeableObject, Vector3Int origin, PlaceableObject.Direction direction)
@@ -26,8 +27,10 @@ public class VoxelBuildingSystem : MonoBehaviour
 
         for (int i = 0; i < positionCount; i++)
         {
+            VoxelObject voxelObject = voxel.GetVoxelObject(Buffer.vector3IntBuffer[i]);
+
             // 놓으려는 공간이 차지되어 있으면 배치 불가
-            if (voxel.GetVoxelObject(Buffer.vector3IntBuffer[i]).isOccupied)
+            if (voxelObject == null || voxelObject.isOccupied)
                 return false;
         }
 
@@ -57,6 +60,7 @@ public class VoxelBuildingSystem : MonoBehaviour
         }
 
         placeableObject.Remove();
+        placeableObject.CanRemove = () => true;
     }
 
     public bool CanRemove(PlaceableObject placeableObject, Voxel<VoxelObject> voxel)

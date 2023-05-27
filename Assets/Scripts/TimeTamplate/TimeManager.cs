@@ -32,9 +32,9 @@ public class TimeManager : MonoBehaviour
 {
     //시간 관련 변수들
     public float gameTime;                      //현재 일과 중 흘러가는 시간
-    public float timeSpeed = 1.0f;            //시간 배속
     public float maxTime;                       //현재 일과의 종료 시간
     public float permittedEventTime;                  //허용될 수 있는 스케줄 상 이벤트 수행 시간
+    public float timeSpeed = 1.0f;            //시간 배속
 
     //컨테이너 관련 변수들
     public GameObject basicContainer;                           //기본 컨테이너
@@ -53,10 +53,11 @@ public class TimeManager : MonoBehaviour
     {
         _ship = new Ship();
         _schedule = new Schedule(basicCalendar);
-        _schedule.CreateScheduleList();
+        _schedule.CreateScheduleList(5);
+        _schedule.MakeScheduleString();
 
         StartCoroutine(TimeGoing());
-        StartCoroutine(CheckShipsWaiting());
+        StartCoroutine(CheckShipIsWaiting());
 
         Score.currentScore = 0;
     }
@@ -104,7 +105,7 @@ public class TimeManager : MonoBehaviour
                 break;
 
             case CargoEventType.Delievering:
-                _schedule.shippingSchedules.Add(currentCargoEvent);
+                _schedule.deliveringCargoEvent.Add(currentCargoEvent);
                 Debug.Log("배송 대기 중인 컨테이너 번호 : " + currentCargoEvent.containers[0].Code);
                 break;
         }
@@ -113,10 +114,10 @@ public class TimeManager : MonoBehaviour
     private void DeliverCargo()
     {
         //화물을 보낼 수 있는 지 확인하는 조건문
-        if (_schedule.shippingSchedules.Count == 0)
+        if (_schedule.deliveringCargoEvent.Count == 0)
             return;
 
-        foreach (CargoEvent events in _schedule.shippingSchedules)
+        foreach (CargoEvent events in _schedule.deliveringCargoEvent)
         {
             foreach (ContainerLocation location in containerHolderLocations)
             {
@@ -136,7 +137,7 @@ public class TimeManager : MonoBehaviour
     }
 
     //대기하고 있는 배(화물선)가 있는 경우 돌아가는 함수
-    private IEnumerator CheckShipsWaiting()
+    private IEnumerator CheckShipIsWaiting()
     {
         while (true)
         {
@@ -200,7 +201,7 @@ public class TimeManager : MonoBehaviour
             container.transform.position = containerSpawnLocations[count].transform.position + offset;
             containerSpawnLocations[count].myContainer = container;
 
-            _schedule.loadedContainersInYard.Add(container);
+            _schedule.containersInYard.Add(container);
 
             count++;
         }
@@ -213,8 +214,8 @@ public class TimeManager : MonoBehaviour
         ContainerCode.Remove(cargoEvent.containers[0].Code);
 
         //현재 컨테이너 목록에서 삭제
-        _schedule.loadedContainersInYard.Remove(container);
-        _schedule.shippingSchedules.Remove(cargoEvent);
+        _schedule.containersInYard.Remove(container);
+        _schedule.deliveringCargoEvent.Remove(cargoEvent);
 
         //컨테이너 완전 삭제
         Destroy(container);

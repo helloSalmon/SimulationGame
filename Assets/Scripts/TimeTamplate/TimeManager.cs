@@ -69,7 +69,7 @@ public class TimeManager : MonoBehaviour
             //배속에 맞게 시간을 돌림
             gameTime += Time.deltaTime * timeSpeed;
 
-            //mainTime을 60진법에 맞게 변환 (게임 시간 내 속도로 변환) 
+            //mainTime을 60진법에 맞게 변환 (게임 시간 내 속도로 변환)
             timeText.text = "현재 시각 : \n" + gameTime.ToString();
 
             DetermineSchedule();
@@ -79,13 +79,13 @@ public class TimeManager : MonoBehaviour
         }
     }
 
-    
+
     private void DetermineSchedule()
     {
         CargoEvent currentCargoEvent = _schedule.GetFirstSchedule(gameTime);
         if (currentCargoEvent == null)
             return;
-        
+
         //스케줄 종류를 구분하고 그에 맞는 함수 실행
         switch (currentCargoEvent.type)
         {
@@ -205,7 +205,7 @@ public class TimeManager : MonoBehaviour
             count++;
         }
     }
-    
+
     //화물 배송 이벤트 함수 (실제 배송)
     public void HandleDeliveringContainers(GameObject container, CargoEvent cargoEvent)
     {

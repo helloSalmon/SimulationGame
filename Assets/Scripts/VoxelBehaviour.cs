@@ -21,6 +21,11 @@ public class VoxelBehaviour : MonoBehaviour
         });
     }
 
+    /// <summary>
+    /// World 좌표로부터 Voxel 내의 Cell 좌표로 변환
+    /// </summary>
+    /// <param name="worldPosition">목표 World 좌표</param>
+    /// <returns>World 좌표에 대응되는 Cell 좌표</returns>
     public Vector3Int WorldToCell(Vector3 worldPosition)
     {
         Vector3 voxelFloatPosition = (worldPosition - transform.position) / cellSize;
@@ -32,11 +37,21 @@ public class VoxelBehaviour : MonoBehaviour
         return voxelPosition;
     }
 
+    /// <summary>
+    /// 해당 Cell의 좌표를 World 좌표로 변환
+    /// </summary>
+    /// <param name="cellPosition">목표 Cell 좌표</param>
+    /// <returns>해당 Cell의 중심 위치</returns>
     public Vector3 GetCellCenterWorld(Vector3Int cellPosition)
     {
         return transform.position + (Vector3)cellPosition * cellSize + Vector3.one * cellSize / 2;
     }
 
+    /// <summary>
+    /// 배치 가능한 오브젝트가 배치되었을 때의 world 좌표계 기준 중심 위치를 계산, VoxelBuildingSystem에 의해 배치가 완료된 뒤 호출되어야 함
+    /// </summary>
+    /// <param name="placeableObject">배치된 오브젝트</param>
+    /// <returns>world 좌표계 기준 중심 위치</returns>
     public Vector3 GetPlaceableObjectCenterWorld(PlaceableObject placeableObject)
     {
         Vector3 result = Vector3.zero;

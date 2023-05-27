@@ -21,6 +21,6 @@ public class CoroutineRunner : MonoBehaviour, ICoroutineRunner
 
     public Coroutine RequestStartCoroutine(IEnumerator enumerator)
     {
-        return RequestStartCoroutine(enumerator);
+        return StartCoroutine(enumerator);
     }
 }

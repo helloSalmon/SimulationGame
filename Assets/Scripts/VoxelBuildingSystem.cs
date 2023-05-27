@@ -2,8 +2,18 @@ using UnityEngine;
 using System.Collections.Generic;
 
 
+/// <summary>
+/// 입력받은 Voxel에 건물을 배치하고 파괴하는 기능을 담당하는 클래스
+/// </summary>
 public class VoxelBuildingSystem : MonoBehaviour
 {
+    /// <summary>
+    /// 해당 Voxel에 placeableObject를 배치
+    /// </summary>
+    /// <param name="voxel"></param>
+    /// <param name="placeableObject">배치하고자 하는 오브젝트</param>
+    /// <param name="origin">오브젝트의 시작점</param>
+    /// <param name="direction">복셀 공간에서의 오브젝트의 방향, 기본값은 PlaceableObject.Direction.Right</param>
     public void PlaceBuilding(Voxel<VoxelObject> voxel, PlaceableObject placeableObject, Vector3Int origin, PlaceableObject.Direction direction)
     {
         if (!CanBuild(voxel, placeableObject, origin, direction))
@@ -21,6 +31,14 @@ public class VoxelBuildingSystem : MonoBehaviour
         placeableObject.CanRemove = () => CanRemove(placeableObject, voxel);
     }
 
+    /// <summary>
+    /// 해당 Voxel에 placeableObject가 배치 가능한 지 확인
+    /// </summary>
+    /// <param name="voxel"></param>
+    /// <param name="placeableObject">배치하고자 하는 오브젝트</param>
+    /// <param name="origin">오브젝트의 시작점</param>
+    /// <param name="direction">복셀 공간에서의 오브젝트의 방향, 기본값은 PlaceableObject.Direction.Right</param>
+    /// <returns></returns>
     public bool CanBuild(Voxel<VoxelObject> voxel, PlaceableObject placeableObject, Vector3Int origin, PlaceableObject.Direction direction)
     {
         int positionCount = placeableObject.GetVoxelPositionList(origin, direction, Buffer.vector3IntBuffer);
@@ -48,6 +66,11 @@ public class VoxelBuildingSystem : MonoBehaviour
         return true;
     }
 
+    /// <summary>
+    /// 해당 Voxel에서 placeableObject를 제거
+    /// </summary>
+    /// <param name="voxel"></param>
+    /// <param name="placeableObject">제거하고자 하는 오브젝트</param>
     public void RemoveBuilding(PlaceableObject placeableObject, Voxel<VoxelObject> voxel)
     {
         if (!CanRemove(placeableObject, voxel))
@@ -63,6 +86,12 @@ public class VoxelBuildingSystem : MonoBehaviour
         placeableObject.CanRemove = () => true;
     }
 
+    /// <summary>
+    /// 해당 Voxel에서 placeableObject가 제거 가능한 지 확인
+    /// </summary>
+    /// <param name="voxel"></param>
+    /// <param name="placeableObject">제거하고자 하는 오브젝트</param>
+    /// <returns></returns>
     public bool CanRemove(PlaceableObject placeableObject, Voxel<VoxelObject> voxel)
     {
         foreach (Vector3Int position in placeableObject.occupyPosition)

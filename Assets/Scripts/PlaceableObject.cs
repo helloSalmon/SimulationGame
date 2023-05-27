@@ -21,11 +21,23 @@ public class PlaceableObject : MonoBehaviour
     public Vector3Int Size { get; private set; } = Vector3Int.one;
     public Func<bool> CanRemove = () => true;
 
+    /// <summary>
+    /// 다음 방향을 구하는 함수, right -> up -> left -> down -> right
+    /// </summary>
+    /// <param name="direction"></param>
+    /// <returns></returns>
     public static Direction GetNextDirection(Direction direction)
     {
         return (Direction)(((int)direction + 1) % 4);
     }
 
+    /// <summary>
+    /// 배치 했을 때 차지하게 될 복셀 좌표를 반환
+    /// </summary>
+    /// <param name="offset">시작점</param>
+    /// <param name="direction">방향</param>
+    /// <param name="result">값을 반환받을 복셀 좌표 값</param>
+    /// <returns>차지 중인 복셀의 수</returns>
     public int GetVoxelPositionList(Vector3Int offset, Direction direction, List<Vector3Int> result)
     {
         result.Clear();
@@ -72,12 +84,19 @@ public class PlaceableObject : MonoBehaviour
         return Size.x * Size.y * Size.z;
     }
 
+    /// <summary>
+    /// 배치 시 호출되는 함수
+    /// </summary>
+    /// <param name="positions">실제로 차지중인 복셀 좌표</param>
     public void Place(IReadOnlyList<Vector3Int> positions)
     {
         m_occupyPosition.Clear();
         m_occupyPosition.AddRange(positions);
     }
 
+    /// <summary>
+    /// 제거 시 호출되는 함수
+    /// </summary>
     public void Remove()
     {
         m_occupyPosition.Clear();

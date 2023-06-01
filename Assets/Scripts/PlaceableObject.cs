@@ -21,6 +21,32 @@ public class PlaceableObject : MonoBehaviour
     public Vector3Int Size { get; private set; } = Vector3Int.one;
     public Func<bool> CanRemove = () => true;
 
+    private static Quaternion[] directions = {
+        Quaternion.AngleAxis(0, Vector3.up), // right
+        Quaternion.AngleAxis(90, Vector3.up), // up
+        Quaternion.AngleAxis(180, Vector3.up), // left
+        Quaternion.AngleAxis(270, Vector3.up), // down
+    };
+
+    public static Direction GetDirectonFromRotation(Quaternion rotation)
+    {
+        float minAngle = float.MaxValue;
+        int min = 0;
+
+        for (int i = 0; i < 4; i++)
+        {
+            float angle = Quaternion.Angle(rotation, directions[i]);
+
+            if (angle < minAngle)
+            {
+                minAngle = angle;
+                min = i;
+            }
+        }
+
+        return (Direction)min;
+    }
+
     /// <summary>
     /// 다음 방향을 구하는 함수, right -> up -> left -> down -> right
     /// </summary>
@@ -82,6 +108,11 @@ public class PlaceableObject : MonoBehaviour
         }
 
         return Size.x * Size.y * Size.z;
+    }
+
+    public void SetDirection(Direction direction)
+    {
+        transform.rotation = directions[(int)direction];
     }
 
     /// <summary>

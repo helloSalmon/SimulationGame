@@ -3,44 +3,16 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class ResourceManager : MonoBehaviour
+public class ResourceManager
 {
-    static ResourceManager s_instance;
-    public static ResourceManager Instance { get { init(); return s_instance; } }
-
     Dictionary<string, GameObject> _cache = new Dictionary<string, GameObject>();
-
-    void Start()
-    {
-        init();
-    }
-
-    void Update()
-    {
-    }
-
-    static void init()
-    {
-        if (s_instance == null)
-        {
-            GameObject go = GameObject.Find("ResourceManager");
-            if (go == null)
-            {
-                go = new GameObject { name = "ResourceManager" };
-                go.AddComponent<ResourceManager>();
-            }
-
-            DontDestroyOnLoad(go);
-            s_instance = go.GetComponent<ResourceManager>();
-        }
-    }
 
     public T Load<T>(string path) where T : Object
     {
         return Resources.Load<T>(path);
     }
 
-    public GameObject Instantiate(string path, Transform parent = null)
+    public GameObject Instantiate(string path, Transform parent = null, string name = null)
     {
         if (!_cache.ContainsKey(path))
         {
@@ -54,7 +26,8 @@ public class ResourceManager : MonoBehaviour
         }
         
         GameObject go = Object.Instantiate(_cache[path], parent);
-        go.name = path;
+        if (name == null) name = path;
+        go.name = name;
         return go;
     }
 

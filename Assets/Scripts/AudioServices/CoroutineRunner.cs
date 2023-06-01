@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 
 
@@ -9,6 +9,7 @@ using UnityEngine;
 public interface ICoroutineRunner
 {
     Coroutine RequestStartCoroutine(IEnumerator enumerator);
+    void RequestStopCoroutine(IEnumerator enumerator);
 }
 
 
@@ -18,9 +19,12 @@ public interface ICoroutineRunner
 /// </summary>
 public class CoroutineRunner : MonoBehaviour, ICoroutineRunner
 {
-
     public Coroutine RequestStartCoroutine(IEnumerator enumerator)
     {
         return StartCoroutine(enumerator);
+    }
+    public void RequestStopCoroutine(IEnumerator enumerator)
+    {
+        StopCoroutine(enumerator);
     }
 }

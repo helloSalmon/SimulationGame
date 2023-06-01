@@ -3,21 +3,25 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-class Schedule
+public class Schedule
 {
+    float eventTypeP = 0.33f;
+
     public float minTimeInterval = 5.0f;    //스케줄의 이벤트 간 최소 간격
 
     //스케줄 표
-    public List<CargoEvent> deliveringCargoEvent;    //컨테이너 배송 스케줄 목록
-    public List<CargoEvent> shippingCargoEvent;       //대기중인 스케줄 목록
-    public List<GameObject> containersInYard;       //현재 컨테이너 야드에 적재된 화물 목록
+    public List<CargoEvent> deliveryCargoEvent;    //컨테이너 배송 스케줄 목록
+    public List<CargoEvent> waitingCargoEvent;       //대기중인 스케줄 목록
+    public List<IContainerInfo> containersInYard;       //현재 컨테이너 야드에 적재된 화물 목록
+    public CargoEventHandler cargoEventHandler;
     Image basicCalendar;
 
     public Schedule(Image basicCalendar)
     {
-        deliveringCargoEvent = new List<CargoEvent>();
-        shippingCargoEvent = new List<CargoEvent>();
-        containersInYard = new List<GameObject>();
+        deliveryCargoEvent = new List<CargoEvent>();
+        waitingCargoEvent = new List<CargoEvent>();
+        containersInYard = new List<IContainerInfo>();
+        cargoEventHandler = new CargoEventHandler();
         this.basicCalendar = basicCalendar;
     }
 
@@ -36,21 +40,14 @@ class Schedule
             currentTime += minTimeInterval + Random.Range(0.0f, 2.0f);
 
             //보내는 이벤트인지 받는 이벤트인지 결정
-            CargoEventType type;
-            if (Random.Range(1, 3) == 1 || containersInShip.Count == 0)
+            if (Random.value <= eventTypeP || containersInShip.Count == 0)
             {
-                type = CargoEventType.Shipping;
+                cargoEventHandler.Register(CargoEventType.Shipping, currentTime, containersInYard, containersInShip);
             }
             else
             {
-                type = CargoEventType.Delievering;
+                cargoEventHandler.Register(CargoEventType.Delivery, currentTime, containersInYard, containersInShip);
             }
-
-            //이벤트 생성
-            CargoEvent creatingEvent = new CargoEvent(type, currentTime, containersInYard, containersInShip);
-
-            //생성된 이벤트를 이벤트 리스트에 저장
-            shippingCargoEvent.Add(creatingEvent);
         }
     }
 
@@ -58,27 +55,27 @@ class Schedule
     {
         
         string scheduleString = "스케줄 \n";
-        for (int i = 0; i < shippingCargoEvent.Count; i++)
+        for (int i = 0; i < waitingCargoEvent.Count; i++)
         {
-            scheduleString = "작업 시간 : " + shippingCargoEvent[i].startTime.ToString() + "\n";
+            scheduleString = "작업 시간 : " + waitingCargoEvent[i].startTime.ToString() + "\n";
             scheduleString += "작업 종류 : ";
             //만약 화물 받기면 화물 생성
-            if (shippingCargoEvent[i].type == CargoEventType.Shipping)
+            if (waitingCargoEvent[i].type == CargoEventType.Shipping)
             {
                 scheduleString += "화물 수령 \n";
                 scheduleString += "받는 컨테이너의 코드 목록 \n";
 
-                for (int j = 0; j < shippingCargoEvent[i].containers.Count; j++)
+                for (int j = 0; j < waitingCargoEvent[i].containers.Count; j++)
                 {
-                    scheduleString += shippingCargoEvent[i].containers[j].Code.ToString() + " / ";
+                    scheduleString += waitingCargoEvent[i].containers[j].Code.ToString() + " / ";
                 }
             }
             //만약 화물 보내기면 있는 화물 중에서 선택
-            else if (shippingCargoEvent[i].type == CargoEventType.Delievering)
+            else if (waitingCargoEvent[i].type == CargoEventType.Delivery)
             {
                 scheduleString += "화물 배송 \n";
                 scheduleString += "보낼 컨테이너 코드 : ";
-                scheduleString += shippingCargoEvent[i].containers[0].Code.ToString();
+                scheduleString += waitingCargoEvent[i].containers[0].Code.ToString();
 
             }
 
@@ -96,13 +93,13 @@ class Schedule
     {
         CargoEvent cargoEvent = null;
         //scheduleList의 첫 번째 항목이 나올 시간이 되었는지 체크
-        if (shippingCargoEvent.Count != 0 && shippingCargoEvent[0].startTime <= gameTime)
+        if (waitingCargoEvent.Count != 0 && waitingCargoEvent[0].startTime <= gameTime)
         {
             //시간이 됐으면 스케줄 실행 함수에 옮기기
-            cargoEvent = shippingCargoEvent[0];
+            cargoEvent = waitingCargoEvent[0];
 
             //실행된 스케줄을 삭제
-            shippingCargoEvent.RemoveAt(0);
+            waitingCargoEvent.RemoveAt(0);
         }
         return cargoEvent;
     }
@@ -110,8 +107,8 @@ class Schedule
     public bool CheckEndConditions(CargoEvent currentShip, int waitingCount)
     {
         //일과가 끝나는 조건이 모두 만족되면 시간 진행 종료
-        if (shippingCargoEvent.Count == 0 && currentShip == null &&
-            waitingCount == 0 && deliveringCargoEvent.Count == 0)
+        if (waitingCargoEvent.Count == 0 && currentShip == null &&
+            waitingCount == 0 && deliveryCargoEvent.Count == 0)
         {
             Debug.Log("일과 종료!");
             return true;

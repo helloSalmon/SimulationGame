@@ -21,9 +21,6 @@ public class PlaceableObject : MonoBehaviour
     public Vector3Int Size { get; private set; } = Vector3Int.one;
     public Func<bool> CanRemove = () => true;
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
     private static Quaternion[] directions = {
         Quaternion.AngleAxis(0, Vector3.up), // right
         Quaternion.AngleAxis(90, Vector3.up), // up
@@ -50,17 +47,11 @@ public class PlaceableObject : MonoBehaviour
         return (Direction)min;
     }
 
-=======
->>>>>>> Stashed changes
     /// <summary>
     /// 다음 방향을 구하는 함수, right -> up -> left -> down -> right
     /// </summary>
     /// <param name="direction"></param>
     /// <returns></returns>
-<<<<<<< Updated upstream
-=======
->>>>>>> c8733a865e6f62f7eabf9d9c57993bcd469f7e54
->>>>>>> Stashed changes
     public static Direction GetNextDirection(Direction direction)
     {
         return (Direction)(((int)direction + 1) % 4);
@@ -119,24 +110,15 @@ public class PlaceableObject : MonoBehaviour
         return Size.x * Size.y * Size.z;
     }
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
     public void SetDirection(Direction direction)
     {
         transform.rotation = directions[(int)direction];
     }
 
-=======
->>>>>>> Stashed changes
     /// <summary>
     /// 배치 시 호출되는 함수
     /// </summary>
     /// <param name="positions">실제로 차지중인 복셀 좌표</param>
-<<<<<<< Updated upstream
-=======
->>>>>>> c8733a865e6f62f7eabf9d9c57993bcd469f7e54
->>>>>>> Stashed changes
     public void Place(IReadOnlyList<Vector3Int> positions)
     {
         m_occupyPosition.Clear();

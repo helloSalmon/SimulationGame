@@ -17,6 +17,10 @@ public class CraneController : MonoBehaviour
 
     [SerializeField]
     Transform arm, head, hook, rope, container;
+
+    [SerializeField]
+    VoxelBuildingSystem buildingSystem;
+
     bool isSelected = false;
     bool hasHit = false;
     bool hasContainer = false;
@@ -49,7 +53,7 @@ public class CraneController : MonoBehaviour
         Vector3 initialScale = Vector3.Scale(trf.localScale, tmp);
         float scaleIncrement = extrusion * extrusionSpeed * Time.deltaTime;
         scaleIncrement += initialScale.magnitude;
-        // scaleIncrement는 변화한 후 scale의 절댓값 
+        // scaleIncrement는 변화한 후 scale의 절댓값
 
         scaleIncrement = Mathf.Clamp(scaleIncrement, minScale, maxScale);
         Vector3 newScale = tmp * scaleIncrement;
@@ -164,6 +168,23 @@ public class CraneController : MonoBehaviour
         if (go != null)
             go.GetComponent<ContainerLocation>().myContainer = null;
 
+        int size = Physics.OverlapSphereNonAlloc(container.transform.position, 1, Buffer.colliderBuffer, 1 << LayerMask.GetMask("VoxelSpace"));
+        PlaceableObject poContainer = container.GetComponent<PlaceableObject>();
+
+        for (int i = 0; i < size; i++)
+        {
+            Collider target = Buffer.colliderBuffer[i];
+
+            if (!target.TryGetComponent(out VoxelBehaviour voxelBehaviour))
+                continue;
+
+            Voxel<VoxelObject> voxel = voxelBehaviour.voxel;
+
+            buildingSystem.RemoveBuilding(poContainer, voxel);
+
+            break;
+        }
+
         container.SetParent(hook);
         Debug.Log("Connected");
     }
@@ -173,10 +194,32 @@ public class CraneController : MonoBehaviour
         if (go != null)
             go.GetComponent<ContainerLocation>().myContainer = container.gameObject;
 
+        int size = Physics.OverlapSphereNonAlloc(container.transform.position, 1, Buffer.colliderBuffer, 1 << LayerMask.GetMask("VoxelSpace"));
+        PlaceableObject poContainer = container.GetComponent<PlaceableObject>();
+
+        for (int i = 0; i < size; i++)
+        {
+            Collider target = Buffer.colliderBuffer[i];
+
+            if (!target.TryGetComponent(out VoxelBehaviour voxelBehaviour))
+                continue;
+
+            Voxel<VoxelObject> voxel = voxelBehaviour.voxel;
+
+            buildingSystem.PlaceBuilding(voxel,
+                                         poContainer,
+                                         voxelBehaviour.WorldToCell(container.transform.position),
+                                         PlaceableObject.Direction.Right);
+
+            container.transform.position = voxelBehaviour.GetPlaceableObjectCenterWorld(poContainer);
+
+            break;
+        }
+
         container.SetParent(null);
         container = null;
         Debug.Log("Disconnected");
-     }
+    }
 
     // Update is called once per frame
     void Update()
@@ -188,7 +231,7 @@ public class CraneController : MonoBehaviour
         switch (_state)
         {
             case CraneState.Moving:
-                UpdateMoving(); 
+                UpdateMoving();
                 UpdateSpinning(); break;
             case CraneState.Dropping:
                 UpdateDropping(); break;
@@ -203,7 +246,7 @@ public class CraneController : MonoBehaviour
         if (_state == CraneState.Moving && Input.anyKeyDown)
         {
             RaycastHit hit;
-            
+
             if (Input.GetKey(KeyCode.Z))
             {
                 if (Physics.Raycast(hook.position, -hook.up, out hit, 30.0f))
@@ -235,7 +278,7 @@ public class CraneController : MonoBehaviour
                             location = hit.collider.gameObject;
                         Debug.Log("Find Object: " + hit.collider.gameObject.name);
                         containerFloorDistance = hit.distance;
-                        distance = containerFloorDistance - container.localScale.y / 2; 
+                        distance = containerFloorDistance - container.localScale.y / 2;
                         // Debug.Log("Hit Distance: " + distance);
                         StartCoroutine(ReleaseContainer(location));
                     }

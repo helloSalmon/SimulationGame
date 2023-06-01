@@ -52,7 +52,7 @@ public class TimeManager : MonoBehaviour
     {
         
         ship = new ShipList();
-        scheduler = new Schedule(basicCalendar);
+        scheduler = new Schedule(basicCalendar, ship);
         scheduler.CreateScheduleList(5);
         scheduler.MakeScheduleString();
 

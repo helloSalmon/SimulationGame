@@ -5,8 +5,6 @@ using UnityEngine.UI;
 
 public class Schedule
 {
-    float eventTypeP = 0.33f;
-
     public float minTimeInterval = 5.0f;    //스케줄의 이벤트 간 최소 간격
 
     //스케줄 표
@@ -16,12 +14,12 @@ public class Schedule
     public CargoEventHandler cargoEventHandler;
     Image basicCalendar;
 
-    public Schedule(Image basicCalendar)
+    public Schedule(Image basicCalendar, ShipList ship)
     {
         deliveryCargoEvent = new List<CargoEvent>();
         waitingCargoEvent = new List<CargoEvent>();
         containersInYard = new List<IContainerInfo>();
-        cargoEventHandler = new CargoEventHandler();
+        cargoEventHandler = new CargoEventHandler(ship);
         this.basicCalendar = basicCalendar;
     }
 
@@ -38,16 +36,13 @@ public class Schedule
         {
             //발생 타이밍 결정
             currentTime += minTimeInterval + Random.Range(0.0f, 2.0f);
-
-            //보내는 이벤트인지 받는 이벤트인지 결정
-            if (Random.value <= eventTypeP || containersInShip.Count == 0)
-            {
-                cargoEventHandler.Register(CargoEventType.Shipping, currentTime, containersInYard, containersInShip);
-            }
-            else
-            {
-                cargoEventHandler.Register(CargoEventType.Delivery, currentTime, containersInYard, containersInShip);
-            }
+            cargoEventHandler.Register(CargoEventType.Shipping, currentTime, containersInYard, containersInShip);
+        }
+        for (int i = 0; i < eventCount; i++)
+        {
+            //발생 타이밍 결정
+            currentTime += minTimeInterval + Random.Range(0.0f, 2.0f);
+            cargoEventHandler.Register(CargoEventType.Delivery, currentTime, containersInYard, containersInShip);
         }
     }
 

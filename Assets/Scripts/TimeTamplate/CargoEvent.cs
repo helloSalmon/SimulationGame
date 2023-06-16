@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 public enum CargoEventType
@@ -9,54 +10,52 @@ public enum CargoEventType
     Delivery      //컨테이너 배송
 }
 
-public class ContainerCode
-{
-    static HashSet<string> _codeSet = new HashSet<string>();
-    public static string Make()
-    {
-        string code = UnityEngine.Random.Range(1000, 9999).ToString();
-        while (_codeSet.Contains(code))
-            code = UnityEngine.Random.Range(1000, 9999).ToString();
-        _codeSet.Add(code);
-        return code;
-    }
-    public static void Remove(string code)
-    {
-        _codeSet.Remove(code);
-    }
-}
-
 public class GameEvent
 {
-    public event Action SignalRecieved;
-    public float EventTriggerTime { get; private set; }
+    public event Action<GameEvent> SignalRecieved;
+    public float EventTriggerTime { get; set; }
+    public LinkedListNode<GameEvent> Node { get; set; }
+    private CargoEventHandler eventHandler;
 
-    public GameEvent(float eventTriggerTime)
+    public GameEvent(float eventTriggerTime, CargoEventHandler eventHandler)
     {
         EventTriggerTime = eventTriggerTime;
+        this.eventHandler = eventHandler;
     }
 
     public virtual void CheckTrigger(float currentTime)
     {
-        if (currentTime > EventTriggerTime)
+        if (currentTime >= EventTriggerTime)
         {
-            SignalRecieved?.Invoke();
+            SignalRecieved?.Invoke(this);
         }
+    }
+
+    public void Unsubscribe()
+    {
+        eventHandler.cargoEvents.Remove(Node);
     }
 }
 
 public abstract class CargoEvent : GameEvent
 {
-    public List<ContainerInfo> containers;      //스케줄에 관련된 컨테이너 목록
+    public List<IContainerInfo> containers;      //스케줄에 관련된 컨테이너 목록
     public float startTime;                        //스케줄이 오는 시간
     public CargoEventType type;         //스케줄 이벤트 종류
     public int cargoCount;
+    public ContainerCollection collection;
+    public bool active;
 
-    public CargoEvent(CargoEventType cargoType, float startTime, int cargoCount) : base(startTime)
+    public CargoEvent(CargoEventType cargoType, float startTime, int cargoCount,
+                      ContainerCollection collection, CargoEventHandler eventHandler) : base(startTime, eventHandler)
     {
         this.startTime = startTime;
         this.cargoCount = cargoCount;
+        this.collection = collection;
+        containers = new List<IContainerInfo>();
         type = cargoType;
-        containers = new List<ContainerInfo>();
+        active = false;
     }
+
+    
 }

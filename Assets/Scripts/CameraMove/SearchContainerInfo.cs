@@ -36,7 +36,6 @@ public class SearchContainerInfo : MonoBehaviour
                     if (raycastHit.transform.TryGetComponent(out TempContainer shownContainer))
                     {
                         Debug.DrawRay(ray.origin, ray.direction, Color.green);
-                        containerInfoText.rectTransform.position = Input.mousePosition;
                         containerInfoText.text = shownContainer.Code;
                     }                    
                 }

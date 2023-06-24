@@ -206,10 +206,12 @@ public class CraneController : MonoBehaviour
 
             Voxel<VoxelObject> voxel = voxelBehaviour.voxel;
 
+            Debug.Log(PlaceableObject.GetDirectonFromRotation(container.transform.rotation).ToString());
+
             buildingSystem.PlaceBuilding(voxel,
                                          poContainer,
                                          voxelBehaviour.WorldToCell(container.transform.position),
-                                         PlaceableObject.Direction.Right);
+                                         PlaceableObject.GetDirectonFromRotation(container.transform.rotation));
 
             container.transform.position = voxelBehaviour.GetPlaceableObjectCenterWorld(poContainer);
 

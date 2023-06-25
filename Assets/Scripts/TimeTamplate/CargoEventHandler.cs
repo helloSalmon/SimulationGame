@@ -10,10 +10,10 @@ public partial class CargoEventHandler
 {
     public LinkedList<GameEvent> cargoEvents;
     ShipList _ship;
-    ContainerCollection _collection;
+    CargoEventCollection _collection;
     float _currentTime;
     
-    public CargoEventHandler(ShipList ship, ContainerCollection collection)
+    public CargoEventHandler(ShipList ship, CargoEventCollection collection)
     {
         cargoEvents = new LinkedList<GameEvent>();
         _ship = ship;
@@ -29,7 +29,7 @@ public partial class CargoEventHandler
         ge.Node = cargoEvents.First;
     }
     
-    public void Register(CargoEventType type, float startTime, ContainerCollection collection)
+    public void Register(CargoEventType type, float startTime, CargoEventCollection collection)
     {
         GameEvent cargoEvent;
         switch (type)

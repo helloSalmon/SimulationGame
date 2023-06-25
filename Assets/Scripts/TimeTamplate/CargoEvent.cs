@@ -43,11 +43,11 @@ public abstract class CargoEvent : GameEvent
     public float startTime;                        //스케줄이 오는 시간
     public CargoEventType type;         //스케줄 이벤트 종류
     public int cargoCount;
-    public ContainerCollection collection;
+    public CargoEventCollection collection;
     public bool active;
 
     public CargoEvent(CargoEventType cargoType, float startTime, int cargoCount,
-                      ContainerCollection collection, CargoEventHandler eventHandler) : base(startTime, eventHandler)
+                      CargoEventCollection collection, CargoEventHandler eventHandler) : base(startTime, eventHandler)
     {
         this.startTime = startTime;
         this.cargoCount = cargoCount;

@@ -9,9 +9,11 @@ public class Managers : MonoBehaviour
 
     ResourceManager _resource = new ResourceManager();
     static TimeManager _time;
+    static ContainerManager _container;
 
     public static ResourceManager Resource { get { return Instance._resource; } }
     public static TimeManager Time { get { init();  return _time; } }
+    public static ContainerManager Container { get { init();  return _container; } }
 
     // Start is called before the first frame update
     void Start()
@@ -34,10 +36,12 @@ public class Managers : MonoBehaviour
                 go = new GameObject { name = "@Managers" };
                 go.AddComponent<Managers>();
                 go.AddComponent<TimeManager>();
+                go.AddComponent<ContainerManager>();
             }
 
             DontDestroyOnLoad(go);
             _time = go.GetComponent<TimeManager>();
+            _container = go.GetComponent<ContainerManager>();
             s_instance = go.GetComponent<Managers>();
         }
     }

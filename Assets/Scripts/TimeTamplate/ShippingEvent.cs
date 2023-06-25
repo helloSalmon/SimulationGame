@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class ShippingEvent : CargoEvent
 {
-    public ShippingEvent(CargoEventType cargoType, float startTime, int cargoCount, ContainerCollection collection, CargoEventHandler eventHandler) :
+    public ShippingEvent(CargoEventType cargoType, float startTime, int cargoCount, CargoEventCollection collection, CargoEventHandler eventHandler) :
         base(cargoType, startTime, cargoCount, collection, eventHandler)
     {
         for (int n = 0; n < cargoCount; n++)
         {
             ContainerInfo currentInfo = new ContainerInfo();
-            currentInfo.Code = ContainerCode.Make(); //중복되는 코드 생성하지 않는 기능 필요
+            currentInfo.Code = Managers.Container.MakeCode(); //중복되는 코드 생성하지 않는 기능 필요
             currentInfo.Size = new Vector2(2, 1);
 
             //임시 리스트에 추가
@@ -45,7 +45,7 @@ public class ShippingEvent : CargoEvent
         for (int i = 0; i < containers.Count; ++i)
         {
             //컨테이너 생성 후 배치 장소에 배치
-            GameObject container = collection.CreateContainer(containers[i]);
+            GameObject container = Managers.Container.CreateContainer(containers[i]);
             Vector3 offset = new Vector3(0, container.transform.localScale.y / 2, 0);
             container.transform.position = Managers.Time.containerSpawnLocations[i].transform.position + offset;
 

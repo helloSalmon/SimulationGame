@@ -43,7 +43,8 @@ public class CraneController : MonoBehaviour
 
     void Start()
     {
-        _destPos = new Vector3(hook.position.x, 0, hook.position.z);
+        _destPos = hook.localPosition;
+        _destPos = new Vector3(_destPos.x, 0, _destPos.z);
         _state = CraneState.Stopped;
     }
 
@@ -243,7 +244,7 @@ public class CraneController : MonoBehaviour
 
     void OnKeyPressed()
     {
-        if (_state == CraneState.Moving && Input.anyKeyDown)
+        if (_state == CraneState.Moving && Input.anyKeyDown && isSelected)
         {
             RaycastHit hit;
 
@@ -312,21 +313,28 @@ public class CraneController : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit, 100.0f))
             {
-                if (hit.collider.gameObject == gameObject)
+                if (hit.collider.gameObject.name == "Crane")
                 {
-                    isSelected ^= true;
-                    if (isSelected)
-                        _state = CraneState.Moving;
+                    if (hit.collider.gameObject == gameObject)
+                    {
+                        isSelected ^= true;
+                        hasHit = true;
+                        if (isSelected)
+                            _state = CraneState.Moving;
+                        else
+                            _state = CraneState.Stopped;
+                        StartCoroutine(ResetHitFlagAfterSeconds(0.1f));
+                    }
                     else
-                        _state = CraneState.Stopped;
-
-                    hasHit = true;
-                    StartCoroutine(ResetHitFlagAfterSeconds(0.5f));
+                    {
+                        isSelected = false;
+                    }
                     Debug.Log($"Selected : {isSelected}");
                 }
                 else if (isSelected)
                 {
                     _destPos = hit.point;
+                    _destPos -= transform.position;
                     // Debug.Log($"Hit : {_destPos}");
                 }
             }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class DeliveryEvent : CargoEvent
 {
-    public DeliveryEvent(CargoEventType cargoType, float startTime, int cargoCount, ContainerCollection collection, CargoEventHandler eventHandler) :
+    public DeliveryEvent(CargoEventType cargoType, float startTime, int cargoCount, CargoEventCollection collection, CargoEventHandler eventHandler) :
         base(cargoType, startTime, cargoCount, collection, eventHandler)
     {
         IContainerInfo currentInfo = new ContainerInfo();
@@ -27,7 +27,7 @@ public class DeliveryEvent : CargoEvent
         {
             if (!active)
             {
-                collection.waitingCargoEvent.Add(this);
+                collection.shownCargoEvent.Add(this);
                 collection.deliveryCargoEvent.Add(this);
                 active = true;
             }
@@ -35,7 +35,8 @@ public class DeliveryEvent : CargoEvent
             foreach (ContainerLocation location in Managers.Time.containerHolderLocations)
             {
                 // 컨테이너 홀더에 알맞은 컨테이너를 내려놓았을 때 컨테이너를 배송한다.
-                if (location.myContainer != null && containers[0].Code == location.myContainer.GetComponent<TempContainer>().Code)
+                // sendlocation에 코드를 할당하는 이벤트를 만들어야 함.
+                if (location.myContainer != null && containers[0].Code == location.myContainer.GetComponent<IContainerInfo>().Code)
                 {
                     HandleDeliveringContainers(location.myContainer, currentTime);
                     return;
@@ -46,10 +47,10 @@ public class DeliveryEvent : CargoEvent
     public void HandleDeliveringContainers(GameObject container, float gameTime)
     {
         Debug.Log("배송 완료된 컨테이너 번호 : " + containers[0].Code);
-        ContainerCode.Remove(containers[0].Code);
+        Managers.Container.RemoveCode(containers[0].Code);
 
         collection.containers.Remove(container.GetComponent<IContainerInfo>());
-        collection.waitingCargoEvent.Remove(this);
+        collection.shownCargoEvent.Remove(this);
         collection.deliveryCargoEvent.Remove(this);
         Object.Destroy(container);
 

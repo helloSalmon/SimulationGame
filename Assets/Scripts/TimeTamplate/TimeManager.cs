@@ -18,12 +18,12 @@ public class ContainerInfo : IContainerInfo
     public Vector2 Size { get; set; }
 }
 
-public class ShipList
+public class ShipInfo
 {
     public CargoEvent currentShip;                                   //현재 컨테이너를 내리고 있는 화물선 (현재 진행 중인 컨테이너 수령 이벤트)
     public List<CargoEvent> waitingShips;                            //뒤에서 대기 중인 화물선 (대기 중인 컨테이너 수령 이벤트)
 
-    public ShipList()
+    public ShipInfo()
     {
         currentShip = null;
         waitingShips = new List<CargoEvent>();
@@ -54,16 +54,25 @@ public class TimeManager : MonoBehaviour
     private void Start()
     {
         scheduler = new Schedule(basicCalendar);
-        scheduler.CreateScheduleList(1);
+        scheduler.CreateScheduleList(2);
         scheduler.MakeScheduleString();
 
         Score.currentScore = 0;
         scoreText.text = "Score : 0";
+
+        GameObject go = GameObject.Find("SendLocations");
+
+        for (int i = 0; i < go.transform.childCount; ++i)
+        {
+            containerHolderLocations.Add(go.transform.GetChild(i).GetComponent<ContainerLocation>());
+        }
+
+        StartCoroutine(Simulate());
     }
 
-    private void Update()
+    private IEnumerator Simulate()
     {
-        if (!scheduler.CheckEndConditions())
+        while (true)
         {
             //배속에 맞게 시간을 돌림
             gameTime += Time.deltaTime * timeSpeed;
@@ -78,7 +87,13 @@ public class TimeManager : MonoBehaviour
                 scheduler.MakeScheduleString();
                 timer = 0.0f;
             }
+
+            if (scheduler.CheckEndConditions())
+                break;
+
+            yield return null;
         }
+        scheduler.MakeScheduleString();
+        Debug.Log("일과종료");
     }
-    
 }

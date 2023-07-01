@@ -8,17 +8,32 @@ using UnityEngine;
 
 public partial class CargoEventHandler
 {
-    public LinkedList<GameEvent> cargoEvents;
-    ShipList _ship;
+    public LinkedList<GameEvent> cargoEvents = new LinkedList<GameEvent>();
+    ShipInfo _shipInfo;
     CargoEventCollection _collection;
+    ContainerShip _containerShip;
     float _currentTime;
+
+    public ShipInfo Ship { get { return _shipInfo; } }
     
-    public CargoEventHandler(ShipList ship, CargoEventCollection collection)
+    public CargoEventHandler(ShipInfo ship, CargoEventCollection collection)
     {
-        cargoEvents = new LinkedList<GameEvent>();
-        _ship = ship;
+        _shipInfo = ship;
         _collection = collection;
         Register(CheckShip, 0);
+        CreateContainerShip();
+    }
+
+    public void CreateContainerShip()
+    {
+        GameObject go = Managers.Resource.Instantiate("ContainerShip");
+        _containerShip = go.GetComponent<ContainerShip>().init();
+        _containerShip.gameObject.SetActive(false);
+    }
+
+    public ContainerShip GetContainerShip()
+    {
+        return _containerShip;
     }
 
     public void Register(Action<GameEvent> action, float startTime)
@@ -29,19 +44,19 @@ public partial class CargoEventHandler
         ge.Node = cargoEvents.First;
     }
     
-    public void Register(CargoEventType type, float startTime, CargoEventCollection collection)
+    public void Register(CargoEventType type, float startTime, int cnt, CargoEventCollection collection)
     {
         GameEvent cargoEvent;
         switch (type)
         {
             case CargoEventType.Shipping:
-                cargoEvent = new ShippingEvent(type, startTime, 3, collection, this);
+                cargoEvent = new ShippingEvent(type, startTime, cnt, collection, this);
                 cargoEvents.AddFirst(cargoEvent);
                 cargoEvent.Node = cargoEvents.First;
-                collection.waitingCargoEvent.Add((CargoEvent)cargoEvent);
+                collection.shownCargoEvent.Add((CargoEvent)cargoEvent);
                 break;
             case CargoEventType.Delivery:
-                cargoEvent = new DeliveryEvent(type, startTime, 3, collection, this);
+                cargoEvent = new DeliveryEvent(type, startTime, cnt, collection, this);
                 cargoEvents.AddFirst(cargoEvent);
                 cargoEvent.Node = cargoEvents.First;
                 break;

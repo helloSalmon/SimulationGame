@@ -27,7 +27,7 @@ public class DeliveryEvent : CargoEvent
         {
             if (!active)
             {
-                collection.waitingCargoEvent.Add(this);
+                collection.shownCargoEvent.Add(this);
                 collection.deliveryCargoEvent.Add(this);
                 active = true;
             }
@@ -35,6 +35,7 @@ public class DeliveryEvent : CargoEvent
             foreach (ContainerLocation location in Managers.Time.containerHolderLocations)
             {
                 // 컨테이너 홀더에 알맞은 컨테이너를 내려놓았을 때 컨테이너를 배송한다.
+                // sendlocation에 코드를 할당하는 이벤트를 만들어야 함.
                 if (location.myContainer != null && containers[0].Code == location.myContainer.GetComponent<IContainerInfo>().Code)
                 {
                     HandleDeliveringContainers(location.myContainer, currentTime);
@@ -49,7 +50,7 @@ public class DeliveryEvent : CargoEvent
         Managers.Container.RemoveCode(containers[0].Code);
 
         collection.containers.Remove(container.GetComponent<IContainerInfo>());
-        collection.waitingCargoEvent.Remove(this);
+        collection.shownCargoEvent.Remove(this);
         collection.deliveryCargoEvent.Remove(this);
         Object.Destroy(container);
 

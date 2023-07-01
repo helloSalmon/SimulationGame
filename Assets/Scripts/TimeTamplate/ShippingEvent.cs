@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,23 +22,30 @@ public class ShippingEvent : CargoEvent
 
     public override void CheckTrigger(float currentTime)
     {
-        if (currentTime >= EventTriggerTime)
+        if (currentTime >= EventTriggerTime && !eventHandler.GetContainerShip().gameObject.activeSelf)
         {
             if (!active)
             {
-                collection.deliveryCargoEvent.Add(this);
+                // collection.deliveryCargoEvent.Add(this);
                 active = true;
             }
 
             if (Managers.Time.scheduler.ship.currentShip == null)
             {
-                HandleShippedContainers();
+                if (eventHandler.Ship.waitingShips.Count > 0)
+                {
+                    eventHandler.Ship.currentShip = eventHandler.Ship.waitingShips[0];
+                    eventHandler.Ship.waitingShips.RemoveAt(0);
+                }
+                
+                eventHandler.GetContainerShip().EnterPort();
+                HandleShippedContainers(eventHandler.GetContainerShip());
                 Managers.Time.scheduler.ship.currentShip = this;
             }
         }
     }
 
-    public void HandleShippedContainers()
+    public void HandleShippedContainers(ContainerShip ship)
     {
         Debug.Log("Cargo is Landed");
 
@@ -47,12 +55,14 @@ public class ShippingEvent : CargoEvent
             //컨테이너 생성 후 배치 장소에 배치
             GameObject container = Managers.Container.CreateContainer(containers[i]);
             Vector3 offset = new Vector3(0, container.transform.localScale.y / 2, 0);
-            container.transform.position = Managers.Time.containerSpawnLocations[i].transform.position + offset;
-
-            Managers.Time.containerSpawnLocations[i].myContainer = container;
+            container.transform.SetParent(eventHandler.GetContainerShip().containerLocations[i].gameObject.transform);
+            container.transform.position = eventHandler.GetContainerShip().containerLocations[i].transform.position + offset;
+            eventHandler.GetContainerShip().containerLocations[i].myContainer = container;
         }
 
-        collection.waitingCargoEvent.Remove(this);
+        collection.shownCargoEvent.Remove(this);
+
+        // ship.ExitPort();
 
         Unsubscribe();
     }

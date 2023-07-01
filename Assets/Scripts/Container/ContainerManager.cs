@@ -46,6 +46,7 @@ public class ContainerManager : MonoBehaviour
     {
         _codeSet.Remove(code);
     }
+
     //컨테이너(화물) 생성 함수
     public GameObject CreateContainer(IContainerInfo containerInfo)
     {

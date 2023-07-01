@@ -28,7 +28,7 @@ public class Managers : MonoBehaviour
 
     static void init()
     {
-        if (s_instance == null || _time == null)
+        if (s_instance == null)
         {
             GameObject go = GameObject.Find("@Managers");
             if (go == null)

@@ -15,7 +15,7 @@ public class GameEvent
     public event Action<GameEvent> SignalRecieved;
     public float EventTriggerTime { get; set; }
     public LinkedListNode<GameEvent> Node { get; set; }
-    private CargoEventHandler eventHandler;
+    protected CargoEventHandler eventHandler;
 
     public GameEvent(float eventTriggerTime, CargoEventHandler eventHandler)
     {

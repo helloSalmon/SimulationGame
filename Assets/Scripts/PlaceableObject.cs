@@ -15,7 +15,8 @@ public class PlaceableObject : MonoBehaviour
 
 
     public IReadOnlyList<Vector3Int> occupyPosition => m_occupyPosition;
-    private readonly List<Vector3Int> m_occupyPosition = new List<Vector3Int>();
+    [SerializeField]
+    private List<Vector3Int> m_occupyPosition = new List<Vector3Int>();
 
     [field: SerializeField]
     public Vector3Int Size { get; private set; } = Vector3Int.one;
@@ -73,35 +74,35 @@ public class PlaceableObject : MonoBehaviour
         switch (direction)
         {
             case Direction.Right:
-                dir = new Vector3Int(1, 1, 1);
+                dir = new Vector3Int(Size.x, 1, Size.z);
                 break;
             case Direction.Up:
-                dir = new Vector3Int(-1, 1, 1);
+                dir = new Vector3Int(Size.z, 1, Size.x);
                 break;
             case Direction.Left:
-                dir = new Vector3Int(-1, 1, -1);
+                dir = new Vector3Int(-Size.x, 1, Size.z);
                 break;
             case Direction.Down:
-                dir = new Vector3Int(1, 1, -1);
+                dir = new Vector3Int(-Size.z, 1, -Size.x);
                 break;
             default:
                 dir = Size;
                 break;
         }
 
-
-        for (int z = 0; z < Size.z; z++)
+        for (int z = 0; z < Mathf.Abs(dir.z); z++)
         {
-            for (int y = 0; y < Size.y; y++)
+            for (int y = 0; y < Mathf.Abs(dir.y); y++)
             {
-                for (int x = 0; x < Size.x; x++)
+                for (int x = 0; x < Mathf.Abs(dir.x); x++)
                 {
-                    Vector3Int delta = Vector3Int.zero;
-
-                    delta.x = dir.x * x;
-                    delta.y = dir.y * y;
-                    delta.z = dir.z * z;
-
+                    Vector3Int delta = dir;
+                    delta.x /= Mathf.Abs(delta.x);
+                    delta.y /= Mathf.Abs(delta.y);
+                    delta.z /= Mathf.Abs(delta.z);
+                    delta.x *= x;
+                    delta.y *= y;
+                    delta.z *= z;
                     result.Add(offset + delta);
                 }
             }

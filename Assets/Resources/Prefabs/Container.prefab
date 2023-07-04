@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5270051549647325006}
   - component: {fileID: 6916123888570475190}
   - component: {fileID: 5653572316489886502}
+  - component: {fileID: 7991491778393804540}
   m_Layer: 0
   m_Name: Container
   m_TagString: Untagged
@@ -112,6 +113,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f5f28cc9bc8aea468398bcde3699c75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_occupyPosition: []
   <Size>k__BackingField: {x: 2, y: 1, z: 1}
 --- !u!114 &5653572316489886502
 MonoBehaviour:
@@ -126,22 +128,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   regularCode: 
-  colorList:
-  - {r: 0.8679245, g: 0.20879315, b: 0.20879315, a: 0}
-  - {r: 0.1448469, g: 0.3146779, b: 0.8773585, a: 0}
-  - {r: 0.08018869, g: 1, b: 0.16560784, a: 0}
-  companyCodeList:
-  - AAA
-  - BBB
-  - CCC
-  - DDD
-  - EEE
-  companyPattern:
-  - {fileID: 21300000, guid: 70de445831710eb44872e341d56668a2, type: 3}
-  - {fileID: 21300000, guid: 6e8cc9c6d52308949b7f8c1cf2ae965b, type: 3}
-  - {fileID: 21300000, guid: 50a99fb4ecfef504db6b8896a6cc9359, type: 3}
-  - {fileID: 21300000, guid: 0f2262f1ea3441c4ab378b9f45a0bb58, type: 3}
-  - {fileID: 21300000, guid: b6df3136f9cd2074cb8bee36c0e0f3cc, type: 3}
+--- !u!114 &7991491778393804540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2025395357245498730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a34dfa2e529ec1d46b2ba07968856067, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  realWeight: 0
+  realGarron: 0
+  realDetailContent: 0
+  declareWeight: 0
+  declareGarron: 0
+  declareDetailContent: 0
+  wrongPercent: 50
+  isWrong: 0
+  container: {fileID: 0}
+  timeManager: {fileID: 0}
 --- !u!1 &7183257792068866997
 GameObject:
   m_ObjectHideFlags: 0

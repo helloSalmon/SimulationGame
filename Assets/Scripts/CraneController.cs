@@ -16,7 +16,8 @@ public class CraneController : MonoBehaviour
     float armMaxScale = 30.0f;
 
     [SerializeField]
-    Transform arm, head, hook, rope, container;
+    Transform arm, head, hook, rope;
+    public Transform container;
 
     [SerializeField]
     VoxelBuildingSystem buildingSystem;
@@ -254,7 +255,7 @@ public class CraneController : MonoBehaviour
             {
                 if (Physics.Raycast(hook.position, -hook.up, out hit, 30.0f))
                 {
-                    if (hit.collider != null && hit.collider.gameObject.name == "Container(Clone)")
+                    if (hit.collider != null && hit.collider.gameObject.name == "Container")
                     {
                         Debug.Log("Find Object: " + hit.collider.gameObject.name);
                         containerHookDistance = hit.distance;

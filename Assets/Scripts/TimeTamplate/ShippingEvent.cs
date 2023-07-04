@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class ShippingEvent : CargoEvent
 {
+    public TimeManager timeManager;
+
     public ShippingEvent(CargoEventType cargoType, float startTime, int cargoCount, CargoEventCollection collection, CargoEventHandler eventHandler) :
         base(cargoType, startTime, cargoCount, collection, eventHandler)
     {
@@ -58,6 +60,7 @@ public class ShippingEvent : CargoEvent
             container.transform.SetParent(eventHandler.GetContainerShip().containerLocations[i].gameObject.transform);
             container.transform.position = eventHandler.GetContainerShip().containerLocations[i].transform.position + offset;
             eventHandler.GetContainerShip().containerLocations[i].myContainer = container;
+            Managers.Time.yardContainers.Add(container.GetComponent<Container>());
         }
 
         collection.shownCargoEvent.Remove(this);

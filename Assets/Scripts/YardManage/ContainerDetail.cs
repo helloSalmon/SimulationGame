@@ -23,9 +23,6 @@ public class ContainerDetail : MonoBehaviour
     public float wrongPercent = 50.0f;
     public bool isWrong;
 
-    public TempContainer tempContainer;
-    public TimeManager timeManager;
-
     public void Start()
     {
         //실제 상세 수치 결정

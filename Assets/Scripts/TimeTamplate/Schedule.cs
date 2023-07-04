@@ -17,7 +17,7 @@ public class CargoEventCollection
     }
 }
 
-public class Schedule
+public class Schedule : MonoBehaviour
 {
     public float minTimeInterval = 5.0f;    //스케줄의 이벤트 간 최소 간격
     public CargoEventCollection collection;
@@ -91,6 +91,18 @@ public class Schedule
                 calendars.Add(Object.Instantiate(basicCalendar));
                 texts.Add(calendars[i].GetComponentInChildren<Text>());
                 calendars[i].transform.SetParent(basicCalendar.transform.parent.GetChild(0), false);
+
+                //스케줄표를 통해 해당 컨테이너의 상세정보표를 볼 수 있도록 구현
+                if (texts[i].text.Contains("수령"))
+                {
+                    //만약 수령 일정이면 아예 볼 수 없게 버튼 컴포넌트를 삭제
+                    Destroy(calendars[i].GetComponent<Button>());
+                }
+                else
+                {
+                    //만약 배송 일정이면 컨테이너를 찾을 수 있도록 코드 삽입
+                    calendars[i].GetComponent<CheckContainer>().myCode = collection.shownCargoEvent[i].containers[0].Code;
+                }
             }
             texts[i].text = scheduleString;
             // calendars[i].rectTransform.anchorMin = new Vector2(0.5f, 1);

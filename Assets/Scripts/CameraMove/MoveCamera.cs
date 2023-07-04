@@ -28,9 +28,9 @@ public class MoveCamera : MonoBehaviour
             prePos = nowPos;
             nowPos = Input.mousePosition;
 
-            Debug.Log(prePos);
-            Debug.Log(nowPos);
-            Debug.Log(prePos - nowPos);
+            // Debug.Log(prePos);
+            // Debug.Log(nowPos);
+            // Debug.Log(prePos - nowPos);
 
             // From the Unity3D docs: "The z position is in world units from the camera."  In my case I'm using the y-axis as height
             // with my camera facing back down the y-axis.  You can ignore this when the camera is orthograhic.

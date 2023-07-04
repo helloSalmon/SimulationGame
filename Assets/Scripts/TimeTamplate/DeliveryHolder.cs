@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TempSendHolder : MonoBehaviour
+public class DeliveryHolder : MonoBehaviour
 {
     public int sendCode;
 }

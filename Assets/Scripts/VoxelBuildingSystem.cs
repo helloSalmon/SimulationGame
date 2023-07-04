@@ -28,8 +28,7 @@ public class VoxelBuildingSystem : MonoBehaviour
         }
 
         placeableObject.Place(Buffer.vector3IntBuffer);
-        PlaceableObject.Direction dir = PlaceableObject.GetDirectonFromRotation(placeableObject.transform.rotation);
-        placeableObject.SetDirection(dir);
+        placeableObject.SetDirection(direction);
 
         placeableObject.CanRemove = () => CanRemove(placeableObject, voxel);
     }

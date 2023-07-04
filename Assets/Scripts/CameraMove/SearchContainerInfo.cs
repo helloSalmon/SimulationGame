@@ -33,10 +33,10 @@ public class SearchContainerInfo : MonoBehaviour
                 if(Physics.Raycast(ray, out raycastHit, Mathf.Infinity))
                 {
                     //이후 다른 스크립트 클래스로 바꿔주어야 함
-                    if (raycastHit.transform.TryGetComponent(out TempContainer shownContainer))
+                    if (raycastHit.transform.TryGetComponent(out SettingContainer shownContainer))
                     {
                         Debug.DrawRay(ray.origin, ray.direction, Color.green);
-                        containerInfoText.text = shownContainer.Code;
+                        containerInfoText.text = shownContainer.regularCode;
                     }                    
                 }
             }

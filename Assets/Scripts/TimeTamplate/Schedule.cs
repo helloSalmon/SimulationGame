@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-class Schedule
+public class Schedule
 {
     public float minTimeInterval = 5.0f;    //스케줄의 이벤트 간 최소 간격
 

@@ -251,7 +251,7 @@ public class CraneController : MonoBehaviour
             {
                 if (Physics.Raycast(hook.position, -hook.up, out hit, 30.0f))
                 {
-                    if (hit.collider != null && hit.collider.gameObject.name == "Container")
+                    if (hit.collider != null && hit.collider.gameObject.name == "Container(Clone)")
                     {
                         Debug.Log("Find Object: " + hit.collider.gameObject.name);
                         containerHookDistance = hit.distance;

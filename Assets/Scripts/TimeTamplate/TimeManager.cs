@@ -40,7 +40,7 @@ public class TimeManager : MonoBehaviour
     public List<ContainerLocation> containerSpawnLocations;         //컨테이너가 생성되는 위치
     public List<ContainerLocation> containerHolderLocations;       //보낼 컨테이너를 저장할 홀더들 (옮겨진 컨테이너의 정보를 확인할 스크립트 필요)
 
-    private Schedule _schedule;
+    public Schedule _schedule;
     private Ship _ship;
 
     //UI
@@ -220,7 +220,8 @@ public class TimeManager : MonoBehaviour
     //컨테이너(화물) 생성 함수
     public GameObject CreateContainer(IContainerInfo containerInfo)
     {
-        TempContainer tempContainer = ResourceManager.Instance.Instantiate("Container").GetComponent<TempContainer>();
+        //TempContainer tempContainer = ResourceManager.Instance.Instantiate("Container").GetComponent<TempContainer>();
+        TempContainer tempContainer = Instantiate(basicContainer).GetComponent<TempContainer>();
 
         //g에 컨테이너 정보 입력 및 컨테이너 외형 생성
         tempContainer.Code = containerInfo.Code;

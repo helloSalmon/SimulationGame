@@ -18,11 +18,11 @@ public class SettingContainer : MonoBehaviour
     // Start is called before the first frame update
     private void Start()
     {
-        CreateContainerCode();
+        CreateContainerCode(true);
     }
 
     //컨테이너 앞부분 정규코드 생성
-    public void CreateContainerCode()
+    public void CreateContainerCode(bool isChangeLooking)
     {
         colorCode = string.Format("{0:D3}", Random.Range(1, colorList.Count));
 
@@ -30,9 +30,12 @@ public class SettingContainer : MonoBehaviour
         companyCode = companyCodeList[companyNumber];
 
         regularCode = colorCode + "-" + companyCode;
-        GetComponent<TempContainer>().Code += regularCode;
 
-        CreateContainerLooking();
+        if (isChangeLooking)
+        {
+            CreateContainerLooking();
+            GetComponent<TempContainer>().Code += regularCode;
+        }
     }
 
     private void CreateContainerLooking()

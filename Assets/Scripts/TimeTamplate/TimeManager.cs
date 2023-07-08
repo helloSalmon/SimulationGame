@@ -43,6 +43,7 @@ public class TimeManager : MonoBehaviour
     public List<ContainerLocation> containerSpawnLocations;         //컨테이너가 생성되는 위치
     public List<ContainerLocation> containerHolderLocations;       //보낼 컨테이너를 저장할 홀더들 (옮겨진 컨테이너의 정보를 확인할 스크립트 필요)
     public List<Container> yardContainers;
+    public ContainerLocation containerReturnLocation;
 
     public Schedule scheduler;
 
@@ -55,7 +56,7 @@ public class TimeManager : MonoBehaviour
     private void Start()
     {
         scheduler = new Schedule(basicCalendar);
-        scheduler.CreateScheduleList(2);
+        scheduler.CreateScheduleList(1);
         scheduler.MakeScheduleString();
 
         Score.currentScore = 0;
@@ -67,6 +68,8 @@ public class TimeManager : MonoBehaviour
         {
             containerHolderLocations.Add(go.transform.GetChild(i).GetComponent<ContainerLocation>());
         }
+
+        containerReturnLocation = GameObject.Find("ReturnLocation").GetComponent<ContainerLocation>();
 
         StartCoroutine(Simulate());
     }

@@ -23,6 +23,9 @@ public class ContainerDetail : MonoBehaviour
     public float wrongPercent = 50.0f;
     public bool isWrong;
 
+    public enum AcceptionState { none, pass, nonpass }
+    public AcceptionState acceptionState = AcceptionState.none;
+
     public void Start()
     {
         //실제 상세 수치 결정
@@ -38,6 +41,8 @@ public class ContainerDetail : MonoBehaviour
             //틀린 거면 무게나 부피, 코드번호 중 하나를 바꾸기
             if(50 <= Random.Range(0,100))
             {
+                declareGarron = realGarron;
+
                 declareWeight = Random.Range(30, 100);
                 while (declareWeight != realWeight)
                 {
@@ -46,6 +51,8 @@ public class ContainerDetail : MonoBehaviour
             }
             else
             {
+                declareWeight = realWeight;
+
                 declareGarron = Random.Range(30, 100);
                 while (declareGarron != realGarron)
                 {
@@ -56,13 +63,16 @@ public class ContainerDetail : MonoBehaviour
             //일정 확률로 안에 내용물도 바꿈 (단순 누락 실수와 내용물이 다른 것은 처벌 강도를 다르게 할 예정임)
             if (50 <= Random.Range(0, 100))
             {
-                realDetailContent = (detailContents)Random.Range(0, 4);
+                declareDetailContent = (detailContents)Random.Range(0, 4);
                 while (realDetailContent != declareDetailContent)
                 {
-                    realDetailContent = (detailContents)Random.Range(0, 4);
+                    declareDetailContent = (detailContents)Random.Range(0, 4);
                 }
             }
-            
+            else
+            {
+                declareDetailContent = realDetailContent;
+            }
         }
         else
         {

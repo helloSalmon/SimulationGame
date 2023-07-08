@@ -38,6 +38,7 @@ public class DeliveryEvent : CargoEvent
                 // sendlocation에 코드를 할당하는 이벤트를 만들어야 함.
                 if (location.myContainer != null && containers[0].Code == location.myContainer.GetComponent<IContainerInfo>().Code)
                 {
+                    location.myContainer.GetComponent<CheckWorkRight>().CheckWorkCorrectly(1);
                     HandleDeliveringContainers(location.myContainer, currentTime);
                     return;
                 }

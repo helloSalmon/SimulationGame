@@ -88,4 +88,18 @@ public class CheckContainer : MonoBehaviour
         declareCode.text = "코드번호 : " + selectedContainer.gameObject.GetComponent<Container>().Code;
         declareContent.text = "내용물 : " + selectedContainer.declareDetailContent.ToString();
     }
+
+    public void ChooseAcceptionState(bool isPass)
+    {
+        ContainerDetail selectedContainer = selectedCrane.container.GetComponent<ContainerDetail>();
+
+        if (isPass)
+        {
+            selectedContainer.acceptionState = ContainerDetail.AcceptionState.pass;
+        }
+        else
+        {
+            selectedContainer.acceptionState = ContainerDetail.AcceptionState.nonpass;
+        }
+    }
 }

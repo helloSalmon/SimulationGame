@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TimeTamplate.unity
     guid: d09be0fc0fcbc854fafff0a9e0aee2c3
+  - enabled: 1
+    path: Assets/Scenes/GameEndScene.unity
+    guid: 8e8d1c10ef64f7044b5b18f3a516624c
   m_configObjects: {}

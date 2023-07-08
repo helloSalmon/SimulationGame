@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 5270051549647325006}
   - component: {fileID: 6916123888570475190}
   - component: {fileID: 5653572316489886502}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Container
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -126,22 +126,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   regularCode: 
-  colorList:
-  - {r: 0.8679245, g: 0.20879315, b: 0.20879315, a: 0}
-  - {r: 0.1448469, g: 0.3146779, b: 0.8773585, a: 0}
-  - {r: 0.08018869, g: 1, b: 0.16560784, a: 0}
-  companyCodeList:
-  - AAA
-  - BBB
-  - CCC
-  - DDD
-  - EEE
-  companyPattern:
-  - {fileID: 21300000, guid: 70de445831710eb44872e341d56668a2, type: 3}
-  - {fileID: 21300000, guid: 6e8cc9c6d52308949b7f8c1cf2ae965b, type: 3}
-  - {fileID: 21300000, guid: 50a99fb4ecfef504db6b8896a6cc9359, type: 3}
-  - {fileID: 21300000, guid: 0f2262f1ea3441c4ab378b9f45a0bb58, type: 3}
-  - {fileID: 21300000, guid: b6df3136f9cd2074cb8bee36c0e0f3cc, type: 3}
 --- !u!1 &7183257792068866997
 GameObject:
   m_ObjectHideFlags: 0
@@ -152,7 +136,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2338794138464520787}
   - component: {fileID: 4815878232249881512}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: PatternShowing
   m_TagString: Untagged
   m_Icon: {fileID: 0}

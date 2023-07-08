@@ -79,7 +79,7 @@ public class CraneController : MonoBehaviour
             else if (dir.magnitude < hook.localPosition.z)
                 extension = -1.0f;
         }
-        head.localRotation = Quaternion.Slerp(head.localRotation, Quaternion.LookRotation(dir), 0.01f);
+        head.localRotation = Quaternion.Lerp(head.localRotation, Quaternion.LookRotation(dir), 0.01f);
 
         // hook와 rope의 position을 arm의 extrusion 정도에 따라 조정해야 한다
         Extrude(arm, extension, extrusionSpeed * 4, Vector3.forward, armMinScale, armMaxScale);
@@ -232,6 +232,10 @@ public class CraneController : MonoBehaviour
         switch (_state)
         {
             case CraneState.Moving:
+                if (isSelected)
+                    _state = CraneState.Moving;
+                else
+                    _state = CraneState.Stopped;
                 UpdateMoving();
                 UpdateSpinning(); break;
             case CraneState.Dropping:
@@ -311,7 +315,7 @@ public class CraneController : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, 100.0f))
+            if (Physics.Raycast(ray, out hit, 100.0f, LayerMask.GetMask("Block")))
             {
                 if (hit.collider.gameObject.name == "Crane")
                 {
@@ -334,7 +338,7 @@ public class CraneController : MonoBehaviour
                 else if (isSelected)
                 {
                     _destPos = hit.point;
-                    _destPos -= transform.position;
+                    _destPos -= head.position;
                     // Debug.Log($"Hit : {_destPos}");
                 }
             }

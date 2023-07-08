@@ -9,9 +9,21 @@ public class MoveCamera : MonoBehaviour
     private Vector3 prePos;
     private Vector3 camPos;
 
+    Quaternion original;
+
     private void Awake()
     {
         Input.simulateMouseWithTouches = true;
+        original = transform.rotation;
+    }
+
+    Vector3 GetMoveVector(float x, float y)
+    {
+        Quaternion current = Quaternion.Euler(original.eulerAngles.x, transform.rotation.eulerAngles.y, original.eulerAngles.z);
+        Quaternion diff = current * Quaternion.Inverse(original);
+        Vector3 dir = new Vector3(x, 0, y);
+        dir = diff * dir;
+        return dir;
     }
 
     private void Update()
@@ -44,9 +56,10 @@ public class MoveCamera : MonoBehaviour
 
             // Invert direction to that terrain appears to move with the mouse.
             //direction = direction * -1;
+            Vector3 dir = GetMoveVector(prePos.x - nowPos.x, prePos.y - nowPos.y);
 
             //transform.position = new Vector3(camPos.x - direction.x, transform.position.y, camPos.z - direction.y);
-            transform.Translate(new Vector3(prePos.x - nowPos.x, 0, prePos.y - nowPos.y) * Time.deltaTime * 5.0f, Space.World);
+            transform.Translate(dir * Time.deltaTime * 10.0f, Space.World);
         }
     }
 }

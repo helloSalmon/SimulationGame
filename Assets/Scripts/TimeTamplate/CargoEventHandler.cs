@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography.X509Certificates;
 using UnityEditor.Rendering;
 using UnityEditorInternal;
 using UnityEngine;
@@ -12,6 +13,7 @@ public partial class CargoEventHandler
     ShipInfo _shipInfo;
     CargoEventCollection _collection;
     ContainerShip _containerShip;
+    CodeLabelSystem _codeLabels;
     float _currentTime;
 
     public ShipInfo Ship { get { return _shipInfo; } }
@@ -22,6 +24,7 @@ public partial class CargoEventHandler
         _collection = collection;
         Register(CheckShip, 0);
         CreateContainerShip();
+        _codeLabels = GameObject.FindObjectOfType<CodeLabelSystem>();
     }
 
     public void CreateContainerShip()
@@ -74,5 +77,21 @@ public partial class CargoEventHandler
             node.Value.CheckTrigger(currentTime);
             node = nextNode;
         }
+    }
+
+    public DeliveryHolder AssignCodeToHolder(string code)
+    {
+        DeliveryHolder holder = _codeLabels.GetRandomHolder();
+        if (holder == null)
+        {
+            return null;
+        }
+        _codeLabels.AssignHolder(holder, code);
+        return holder;
+    }
+
+    public void ClearCodeInHolder(DeliveryHolder holder)
+    {
+        _codeLabels.ClearHolder(holder);
     }
 }

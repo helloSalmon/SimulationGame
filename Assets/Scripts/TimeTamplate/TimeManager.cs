@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 // 컨테이너가 구현해야 하는 메소드
@@ -42,10 +43,8 @@ public class TimeManager : MonoBehaviour
     public GameObject basicContainer;                           //기본 컨테이너
     public List<ContainerLocation> containerSpawnLocations;         //컨테이너가 생성되는 위치
     public List<ContainerLocation> containerHolderLocations;       //보낼 컨테이너를 저장할 홀더들 (옮겨진 컨테이너의 정보를 확인할 스크립트 필요)
-
     public Schedule scheduler;
 
-    //UIManagers.Instance.
     public Image basicCalendar;      //스케줄 표 생성에 사용되는 기본 스케줄 표 양식
     public Text timeText;                                   //현재 시각을 표시하는 텍스트
     public Image scheduleCalendar;             //유저가 보는 스케줄 표
@@ -54,7 +53,7 @@ public class TimeManager : MonoBehaviour
     private void Start()
     {
         scheduler = new Schedule(basicCalendar);
-        scheduler.CreateScheduleList(2);
+        scheduler.CreateScheduleList(1, 130, 3);
         scheduler.MakeScheduleString();
 
         Score.currentScore = 0;
@@ -88,12 +87,23 @@ public class TimeManager : MonoBehaviour
                 timer = 0.0f;
             }
 
-            if (scheduler.CheckEndConditions())
+            if (scheduler.CheckEndConditions(gameTime))
                 break;
 
             yield return null;
         }
+
         scheduler.MakeScheduleString();
+        scheduler.ReflectRestScore(gameTime);
         Debug.Log("일과종료");
+        SceneManager.LoadScene("GameEndScene");
+    }
+
+    public float? GetGameEndTime()
+    {
+        if (scheduler == null)
+            return null;
+
+        return scheduler.gameEndTime;
     }
 }

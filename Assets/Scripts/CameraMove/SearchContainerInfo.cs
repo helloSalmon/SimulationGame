@@ -30,7 +30,7 @@ public class SearchContainerInfo : MonoBehaviour
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 RaycastHit raycastHit;
 
-                if(Physics.Raycast(ray, out raycastHit, Mathf.Infinity))
+                if(Physics.Raycast(ray, out raycastHit, Mathf.Infinity, LayerMask.GetMask("Block")))
                 {
                     //이후 다른 스크립트 클래스로 바꿔주어야 함
                     if (raycastHit.transform.TryGetComponent(out SettingContainer shownContainer))

@@ -4,5 +4,6 @@ using UnityEngine;
 
 public class DeliveryHolder : MonoBehaviour
 {
-    public int sendCode;
+    public int id;
+    public string sendCode;
 }

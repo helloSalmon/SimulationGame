@@ -39,7 +39,7 @@ public class Managers : MonoBehaviour
                 go.AddComponent<ContainerManager>();
             }
 
-            DontDestroyOnLoad(go);
+            // DontDestroyOnLoad(go);
             _time = go.GetComponent<TimeManager>();
             _container = go.GetComponent<ContainerManager>();
             s_instance = go.GetComponent<Managers>();

@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 5653572316489886502}
   - component: {fileID: 7991491778393804540}
   - component: {fileID: -1117952551013657083}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Container
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -164,6 +164,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_occupyPosition: []
   <Size>k__BackingField: {x: 1, y: 1, z: 1}
+  
 --- !u!1 &7183257792068866997
 GameObject:
   m_ObjectHideFlags: 0
@@ -174,7 +175,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2338794138464520787}
   - component: {fileID: 4815878232249881512}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: PatternShowing
   m_TagString: Untagged
   m_Icon: {fileID: 0}

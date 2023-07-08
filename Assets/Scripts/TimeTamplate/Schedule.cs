@@ -23,6 +23,7 @@ public class Schedule : MonoBehaviour
     public CargoEventCollection collection;
     public CargoEventHandler cargoEventHandler;
     public ShipInfo ship;
+    public float gameEndTime = 0.0f;
     Image basicCalendar;
     List<Image> calendars;
     List<Text> texts;
@@ -38,7 +39,7 @@ public class Schedule : MonoBehaviour
     }
 
     //스케줄표 자동 생성
-    public void CreateScheduleList(int eventCount)
+    public void CreateScheduleList(int eventCount, float gameEnd, int numEvents)
     {
         float currentTime = 0;
         
@@ -49,10 +50,12 @@ public class Schedule : MonoBehaviour
         {
             //발생 타이밍 결정
             currentTime += minTimeInterval + Random.Range(0.0f, 2.0f);
-            cargoEventHandler.Register(CargoEventType.Shipping, currentTime, 10, collection);
+            cargoEventHandler.Register(CargoEventType.Shipping, currentTime, numEvents, collection);
         }
 
         cargoEventHandler.Register(cargoEventHandler.GenerateDeliveryEvent, currentTime);
+
+        gameEndTime = currentTime + gameEnd;
     }
 
     public void MakeScheduleString()
@@ -118,9 +121,23 @@ public class Schedule : MonoBehaviour
             calendars.RemoveAt(i);
         }
     }
-    
-    public bool CheckEndConditions()
+
+    public void ReflectRestScore(float gameTime)
     {
+        foreach (var ce in collection.deliveryCargoEvent)
+        {
+            Score.Calculate(300, ce.EventTriggerTime, gameTime);
+        }
+
+        foreach (var ce in ship.waitingShips)
+        {
+            Score.Calculate(300 * ce.containers.Count, ce.EventTriggerTime + Score.permittedEventTime, gameTime);
+        }
+    }
+    
+    public bool CheckEndConditions(float gameTime)
+    {
+        if (gameEndTime < gameTime) return true;
         //일과가 끝나는 조건이 모두 만족되면 시간 진행 종료
         if (collection.shownCargoEvent.Count == 0 && ship.currentShip == null &&
             ship.waitingShips.Count == 0 && collection.deliveryCargoEvent.Count == 0)

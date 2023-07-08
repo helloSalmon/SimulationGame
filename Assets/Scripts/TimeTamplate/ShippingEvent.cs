@@ -65,8 +65,6 @@ public class ShippingEvent : CargoEvent
 
         collection.shownCargoEvent.Remove(this);
 
-        // ship.ExitPort();
-
         Unsubscribe();
     }
 }

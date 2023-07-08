@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class StartGame : MonoBehaviour
 {
-    public void StartIngame()
+    public void GameStart()
     {
         SceneManager.LoadScene("TimeTamplate");
     }

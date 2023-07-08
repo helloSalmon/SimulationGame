@@ -16,7 +16,8 @@ public class CraneController : MonoBehaviour
     float armMaxScale = 30.0f;
 
     [SerializeField]
-    Transform arm, head, hook, rope, container;
+    Transform arm, head, hook, rope;
+    public Transform container;
 
     [SerializeField]
     VoxelBuildingSystem buildingSystem;

@@ -49,6 +49,7 @@ public class DeliveryEvent : CargoEvent
                 if (location.myContainer != null && containers[0].Code == location.myContainer.GetComponent<IContainerInfo>().Code
                     && location.gameObject.GetComponent<DeliveryHolder>().sendCode == _holder.sendCode)
                 {
+                    location.myContainer.GetComponent<CheckWorkRight>().CheckWorkCorrectly(1);
                     eventHandler.ClearCodeInHolder(_holder);
                     HandleDeliveringContainers(location.myContainer, currentTime);
                     return;

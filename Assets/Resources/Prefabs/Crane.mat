@@ -170,7 +170,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AdvancedTab: 1
+    - _AdvancedTab: 0
     - _AlbedoMapIntensity: 1
     - _AlphaClip: 0
     - _AlphaClipping: 0
@@ -221,13 +221,13 @@ Material:
     - _Metallic: 0
     - _NormalMapIntensity: 1
     - _OcclusionStrength: 1
-    - _OptionsTab: 1
+    - _OptionsTab: 0
     - _Outline: 2
     - _OutlineData: 0
     - _OutlineFadeMax: 2
     - _OutlineFadeMin: 0.25
     - _OutlineNoise: 0
-    - _OutlineSize: 100
+    - _OutlineSize: 30
     - _OutlineTab: 1
     - _Parallax: 0.005
     - _QueueOffset: 0

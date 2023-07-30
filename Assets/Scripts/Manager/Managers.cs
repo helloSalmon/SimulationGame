@@ -11,17 +11,15 @@ public class Managers : MonoBehaviour
     static TimeManager _time;
     static ContainerManager _container;
 
-    public static ResourceManager Resource { get { return Instance._resource; } }
+    public static ResourceManager Resource { get { init();  return s_instance._resource; } }
     public static TimeManager Time { get { init();  return _time; } }
     public static ContainerManager Container { get { init();  return _container; } }
 
-    // Start is called before the first frame update
     void Start()
     {
         init();
     }
 
-    // Update is called once per frame
     void Update()
     {
     }

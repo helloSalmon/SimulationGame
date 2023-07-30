@@ -7,7 +7,7 @@ public class VoxelBehaviour : MonoBehaviour
     private Vector3Int size;
 
     [SerializeField]
-    private float cellSize;
+    private int cellSize;
 
     public Voxel<VoxelObject> voxel { get; private set; }
 

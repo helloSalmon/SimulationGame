@@ -7,19 +7,18 @@ public class PlaceableObject : MonoBehaviour
 {
     public enum Direction
     {
-        Right = 0,
-        Up = 1,
-        Left = 2,
-        Down = 3,
+        Up = 0,
+        Right = 1,
+        Down = 2,
+        Left = 3,
     }
-
 
     public IReadOnlyList<Vector3Int> occupyPosition => m_occupyPosition;
     [SerializeField]
     private List<Vector3Int> m_occupyPosition = new List<Vector3Int>();
 
     [field: SerializeField]
-    public Vector3Int Size { get; private set; } = Vector3Int.one;
+    protected Vector3Int _size = Vector3Int.one;
     public Func<bool> CanRemove = () => true;
 
     private static Quaternion[] directions = {
@@ -69,24 +68,29 @@ public class PlaceableObject : MonoBehaviour
     {
         result.Clear();
 
-        Vector3Int dir;
+        Vector3Int dir, where;
 
         switch (direction)
         {
             case Direction.Right:
-                dir = new Vector3Int(Size.x, 1, Size.z);
+                dir = new Vector3Int(_size.x, 1, _size.z);
+                where = Vector3Int.right;
                 break;
             case Direction.Up:
-                dir = new Vector3Int(Size.z, 1, Size.x);
+                dir = new Vector3Int(_size.z, 1, _size.x);
+                where = Vector3Int.forward;
                 break;
             case Direction.Left:
-                dir = new Vector3Int(-Size.x, 1, Size.z);
+                dir = new Vector3Int(-_size.x, 1, _size.z);
+                where = Vector3Int.left;
                 break;
             case Direction.Down:
-                dir = new Vector3Int(-Size.z, 1, -Size.x);
+                dir = new Vector3Int(-_size.z, 1, -_size.x);
+                where = Vector3Int.back;
                 break;
             default:
-                dir = Size;
+                dir = _size;
+                where = Vector3Int.forward;
                 break;
         }
 
@@ -103,12 +107,17 @@ public class PlaceableObject : MonoBehaviour
                     delta.x *= x;
                     delta.y *= y;
                     delta.z *= z;
-                    result.Add(offset + delta);
+                    result.Add(delta);
                 }
             }
         }
 
-        return Size.x * Size.y * Size.z;
+        for (int i = 0; i < result.Count; ++i)
+        {
+            result[i] = result[i] - where + offset;
+        }
+
+        return _size.x * _size.y * _size.z;
     }
 
     public void SetDirection(Direction direction)

@@ -13,13 +13,26 @@ public class Container : PlaceableObject, IContainerInfo
         set => code = value;
     }
 
-    // todo: 컨테이너 사이즈는 Vector3Int임
-    Vector2 IContainerInfo.Size
+    [SerializeField]
+    private int cellSize;
+
+    public Vector3Int Size
     {
-        get => throw new NotImplementedException();
-        set => throw new NotImplementedException();
+        get => cellSize * _size;
     }
 
-
     private string code;
+
+    // 현재 자신과 연관되어 있는 화물 이벤트를 나타낸다.
+    public CargoEvent cargoEvent;
+
+    public void DeleteEvent()
+    {
+        if (cargoEvent == null) return;
+
+        if (cargoEvent.type == CargoEventType.Delivery)
+        {
+            cargoEvent.Unsubscribe();
+        }
+    }
 }

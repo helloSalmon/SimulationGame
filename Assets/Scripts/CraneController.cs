@@ -1,11 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
+using Unity.Burst.CompilerServices;
+using Unity.VisualScripting;
 using Unity.VisualScripting.FullSerializer;
 using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.Pool;
+using UnityEngine.UIElements;
 
-public class CraneController : MonoBehaviour
+public class CraneController : MonoBehaviour, ICraneController
 {
     // Start is called before the first frame update
     float rotationSpeed = 60.0f;
@@ -17,21 +23,26 @@ public class CraneController : MonoBehaviour
 
     [SerializeField]
     Transform arm, head, hook, rope;
-    public Transform container;
+    Transform container;
+    public Transform Container { get { return container; } }
 
     [SerializeField]
     VoxelBuildingSystem buildingSystem;
 
     bool isSelected = false;
     bool hasHit = false;
-    bool hasContainer = false;
     Vector3 _destPos;
-    GameObject location;
+    GameObject plate;
 
     // for logic
     float containerHookDistance;
     float containerFloorDistance;
     float distance;
+
+    // temporary
+    CheckContainer _check;
+    bool voxelActive = false;
+    Highlighter _light;
 
     public enum CraneState
     {
@@ -47,6 +58,8 @@ public class CraneController : MonoBehaviour
         _destPos = hook.localPosition;
         _destPos = new Vector3(_destPos.x, 0, _destPos.z);
         _state = CraneState.Stopped;
+        _check = GameObject.Find("Check Container Button").GetComponent<CheckContainer>();
+        _light = gameObject.GetComponent<Highlighter>();
     }
 
     void Extrude(Transform trf, float extrusion, float extrusionSpeed, Vector3 dir, float minScale, float maxScale)
@@ -80,7 +93,17 @@ public class CraneController : MonoBehaviour
             else if (dir.magnitude < hook.localPosition.z)
                 extension = -1.0f;
         }
-        head.localRotation = Quaternion.Lerp(head.localRotation, Quaternion.LookRotation(dir), 0.01f);
+        // head.localRotation = Quaternion.Lerp(head.localRotation, Quaternion.LookRotation(dir), 0.01f);
+        var angle = Quaternion.Angle(head.rotation, Quaternion.LookRotation(dir));
+        if (Vector3.Cross(head.forward, dir).y > 0)
+        {
+            angle = -angle;
+        }
+        if (Mathf.Abs(angle) > 0.01f)
+        {
+            head.localRotation *= Quaternion.AngleAxis(-Mathf.Sign(angle) * rotationSpeed * Time.deltaTime, Vector3.up);
+            // head.rotation = Quaternion.RotateTowards(head.rotation, Quaternion.Euler(0, angle, 0), rotationSpeed * Time.deltaTime);
+        }
 
         // hook와 rope의 position을 arm의 extrusion 정도에 따라 조정해야 한다
         Extrude(arm, extension, extrusionSpeed * 4, Vector3.forward, armMinScale, armMaxScale);
@@ -116,43 +139,44 @@ public class CraneController : MonoBehaviour
         }
     }
 
-    IEnumerator GrabContainer(GameObject go)
+    IEnumerator GrabContainer()
     {
         _state = CraneState.Dropping;
         while (_state == CraneState.Dropping)
         {
             yield return null;
         }
-        AttachContainer(go);
+        AttachContainer();
         _state = CraneState.Raising;
         while (_state == CraneState.Raising)
         {
 
             yield return null;
         }
-        hasContainer = true;
         _state = CraneState.Moving;
     }
 
-    IEnumerator ReleaseContainer(GameObject go)
+    IEnumerator ReleaseContainer()
     {
         _state = CraneState.Dropping;
         while (_state == CraneState.Dropping)
         {
             yield return null;
         }
-        DetachContainer(go);
+        DetachContainer();
         _state = CraneState.Raising;
         while (_state == CraneState.Raising)
         {
             yield return null;
         }
-        hasContainer = false;
         _state = CraneState.Moving;
     }
 
     void UpdateSpinning()
     {
+        if (!isSelected)
+            return;
+
         if (Input.GetKey(KeyCode.C))
         {
             // hook.localRotation *= Quaternion.Euler(0.0f, 1.1f, 0.0f);
@@ -165,47 +189,34 @@ public class CraneController : MonoBehaviour
         }
     }
 
-    void AttachContainer(GameObject go)
+    void AttachContainer()
     {
-        if (go != null)
-            go.GetComponent<ContainerLocation>().myContainer = null;
+        if (plate != null)
+            plate.GetComponent<ContainerLocation>().myContainer = null;
 
-        int size = Physics.OverlapSphereNonAlloc(container.transform.position, 1, Buffer.colliderBuffer, 1 << LayerMask.GetMask("VoxelSpace"));
-        PlaceableObject poContainer = container.GetComponent<PlaceableObject>();
-
-        for (int i = 0; i < size; i++)
+        if (voxelActive)
         {
-            Collider target = Buffer.colliderBuffer[i];
-
-            if (!target.TryGetComponent(out VoxelBehaviour voxelBehaviour))
-                continue;
-
+            PlaceableObject poContainer = container.GetComponent<PlaceableObject>();
+            VoxelBehaviour voxelBehaviour = SearchVoxel(container.transform.position);
             Voxel<VoxelObject> voxel = voxelBehaviour.voxel;
 
             buildingSystem.RemoveBuilding(poContainer, voxel);
-
-            break;
         }
 
         container.SetParent(hook);
         Debug.Log("Connected");
     }
 
-    void DetachContainer(GameObject go)
+    void DetachContainer()
     {
-        if (go != null)
-            go.GetComponent<ContainerLocation>().myContainer = container.gameObject;
+        if (plate != null)
+            plate.GetComponent<ContainerLocation>().myContainer = container.gameObject;
 
-        int size = Physics.OverlapSphereNonAlloc(container.transform.position, 1, Buffer.colliderBuffer, 1 << LayerMask.GetMask("VoxelSpace"));
-        PlaceableObject poContainer = container.GetComponent<PlaceableObject>();
-
-        for (int i = 0; i < size; i++)
+        if (voxelActive)
         {
-            Collider target = Buffer.colliderBuffer[i];
+            PlaceableObject poContainer = container.GetComponent<PlaceableObject>();
 
-            if (!target.TryGetComponent(out VoxelBehaviour voxelBehaviour))
-                continue;
-
+            VoxelBehaviour voxelBehaviour = SearchVoxel(container.transform.position);
             Voxel<VoxelObject> voxel = voxelBehaviour.voxel;
 
             Debug.Log(PlaceableObject.GetDirectonFromRotation(container.transform.rotation).ToString());
@@ -216,8 +227,6 @@ public class CraneController : MonoBehaviour
                                          PlaceableObject.GetDirectonFromRotation(container.transform.rotation));
 
             container.transform.position = voxelBehaviour.GetPlaceableObjectCenterWorld(poContainer);
-
-            break;
         }
 
         container.SetParent(null);
@@ -225,20 +234,40 @@ public class CraneController : MonoBehaviour
         Debug.Log("Disconnected");
     }
 
+    VoxelBehaviour SearchVoxel(Vector3 position, float radius = 1f)
+    {
+        
+        int size = Physics.OverlapSphereNonAlloc(position, radius, Buffer.colliderBuffer, LayerMask.GetMask("VoxelSpace"));
+
+        for (int i = 0; i < size; i++)
+        {
+            Collider target = Buffer.colliderBuffer[i];
+
+            if (target.TryGetComponent(out VoxelBehaviour voxelBehaviour))
+            {
+                return voxelBehaviour;
+            }
+        }
+
+        return null;
+    }
+
     // Update is called once per frame
     void Update()
     {
-
-        OnKeyPressed();
-        OnMouseMove();
-        OnMouseClicked();
+        if (EventSystem.current.IsPointerOverGameObject() == false)
+        {
+            OnKeyPressed();
+            OnMouseMove();
+            OnMouseClicked();
+        }
         switch (_state)
         {
             case CraneState.Moving:
-                if (isSelected)
-                    _state = CraneState.Moving;
-                else
-                    _state = CraneState.Stopped;
+                //if (isSelected)
+                //    _state = CraneState.Moving;
+                //else
+                //    _state = CraneState.Stopped;
                 UpdateMoving();
                 UpdateSpinning(); break;
             case CraneState.Dropping:
@@ -249,47 +278,152 @@ public class CraneController : MonoBehaviour
         }
     }
 
-    void OnKeyPressed()
+    bool CanAttach()
     {
-        if (_state == CraneState.Moving && Input.anyKeyDown && isSelected)
+        Vector3 origin = hook.position;
+        origin.y = 0;
+        VoxelBehaviour voxelBehaviour = SearchVoxel(origin);
+        plate = null;
+        int size = Physics.RaycastNonAlloc(hook.position, -hook.up, Buffer.raycastHit, 30.0f, LayerMask.GetMask("Floor", "Block", "VoxelSpace"));
+        PlaceableObject poObject = null;
+
+        float min_distance = float.MaxValue;
+
+        for (int i = 0; i < size; ++i)
         {
-            RaycastHit hit;
+            RaycastHit hit = Buffer.raycastHit[i];
+            Collider target = hit.collider;
 
-            if (Input.GetKey(KeyCode.Z))
+            if (target.gameObject.layer == LayerMask.NameToLayer("Floor"))
             {
-                if (Physics.Raycast(hook.position, -hook.up, out hit, 30.0f))
+                plate = target.gameObject;
+            }
+            else if (target.name == "Container")
+            {
+                float temp = hit.distance - hook.localScale.y / 2;
+                if (min_distance > temp)
                 {
-                    if (hit.collider != null && hit.collider.gameObject.name == "Container")
-                    {
-                        Debug.Log("Find Object: " + hit.collider.gameObject.name);
-                        containerHookDistance = hit.distance;
-                        distance = containerHookDistance - hook.localScale.y / 2;
-                        container = hit.collider.transform;
-                        // Debug.Log("Hit Distance: " + distance);
-
-                        location = null;
-                        if (Physics.Raycast(hook.position, -hook.up, out hit, 30.0f, LayerMask.GetMask("Floor")))
-                            location = hit.collider.gameObject;
-
-                        StartCoroutine(GrabContainer(location));
-                    }
+                    min_distance = temp;
+                    container = hit.collider.transform;
+                    poObject = target.GetComponent<PlaceableObject>();
                 }
             }
-            else if (Input.GetKey(KeyCode.X) && hasContainer)
+        }
+
+
+        voxelActive = false;
+        if (voxelBehaviour != null)
+        {
+            voxelActive = buildingSystem.CanRemove(poObject, voxelBehaviour.voxel);
+            if (!voxelActive)
+                return false;
+        }
+
+        if (poObject != null)
+        {
+            distance = min_distance;
+            return true;
+        }
+
+        return false;
+    }
+
+    bool CanDetach()
+    {
+        if (container == null) return false;
+
+        Vector3 origin = container.position;
+
+        // 나중에 바닥의 높이에 따라 origin을 높여줘야 함
+        origin.y = 0;
+        VoxelBehaviour voxelBehaviour = SearchVoxel(origin);
+        int size = Physics.RaycastNonAlloc(container.position, -container.up, Buffer.raycastHit, 30.0f, LayerMask.GetMask("Floor", "Block", "VoxelSpace"));
+        PlaceableObject poObject = container.GetComponent<PlaceableObject>();
+
+        plate = null;
+        float min_distance = float.MaxValue;
+
+        for (int i = 0; i < size; ++i)
+        {
+            Collider target = Buffer.raycastHit[i].collider;
+            RaycastHit hit = Buffer.raycastHit[i];
+
+            if (target.gameObject.layer == LayerMask.NameToLayer("Floor"))
             {
-                if (Physics.Raycast(container.position, -container.up, out hit, 30.0f))
+                plate = target.gameObject;
+                float temp = hit.distance - container.localScale.y / 2;
+                if (min_distance > temp)
                 {
-                    if (hit.collider != null)
-                    {
-                        location = null;
-                        if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Floor"))
-                            location = hit.collider.gameObject;
-                        Debug.Log("Find Object: " + hit.collider.gameObject.name);
-                        containerFloorDistance = hit.distance;
-                        distance = containerFloorDistance - container.localScale.y / 2;
-                        // Debug.Log("Hit Distance: " + distance);
-                        StartCoroutine(ReleaseContainer(location));
-                    }
+                    min_distance = temp;
+                }
+            }
+            else if (target.gameObject.layer == LayerMask.NameToLayer("Block"))
+            {
+                min_distance = Mathf.Min(min_distance, hit.distance - container.localScale.y / 2);
+            }
+        }
+
+        if (float.MaxValue - min_distance < 0.1f)
+        {
+            min_distance = container.position.y;
+        }
+
+        origin.y = container.position.y - min_distance;
+        voxelActive = false;
+        if (voxelBehaviour != null)
+        {
+            voxelActive = buildingSystem.CanBuild(voxelBehaviour.voxel, poObject,
+                                                  voxelBehaviour.WorldToCell(origin),
+                                                  PlaceableObject.GetDirectonFromRotation(container.transform.rotation));
+            if (!voxelActive)
+                return false;
+        }
+
+        if (min_distance < float.MaxValue)
+        {
+            distance = min_distance;
+            return true;
+        }
+
+        return false;
+    }
+
+    void OnKeyPressed()
+    {
+        Debug.DrawRay(hook.position, -hook.up * 30, Color.red);
+        if (container)
+            Debug.DrawRay(container.position, -container.up * 30, Color.blue);
+        if (_state == CraneState.Moving && Input.anyKeyDown && isSelected)
+        {
+            if (Input.GetKey(KeyCode.Z))
+            {
+                if (CanAttach())
+                {
+                    //Debug.Log("Find Object: " + hit.collider.gameObject.name);
+                    //containerHookDistance = hit.distance;
+                    //distance = containerHookDistance - hook.localScale.y / 2;
+                    //container = hit.collider.transform;
+                    //// Debug.Log("Hit Distance: " + distance);
+
+                    //plate = null;
+                    //if (Physics.Raycast(hook.position, -hook.up, out hit, 30.0f, LayerMask.GetMask("Floor")))
+                    //    plate = hit.collider.gameObject;
+
+                    StartCoroutine(GrabContainer());
+                }
+            }
+            else if (Input.GetKey(KeyCode.X))
+            {
+                if (CanDetach())
+                {
+                    //plate = null;
+                    //if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Floor"))
+                    //    plate = hit.collider.gameObject;
+                    //Debug.Log("Find Object: " + hit.collider.gameObject.name);
+                    //containerFloorDistance = hit.distance;
+                    //distance = containerFloorDistance - container.localScale.y / 2;
+                    //// Debug.Log("Hit Distance: " + distance);
+                    StartCoroutine(ReleaseContainer());
                 }
             }
         }
@@ -318,7 +452,7 @@ public class CraneController : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, 100.0f, LayerMask.GetMask("Block")))
+            if (Physics.Raycast(ray, out hit, 300f, LayerMask.GetMask("Block")))
             {
                 if (hit.collider.gameObject.name == "Crane")
                 {
@@ -327,14 +461,15 @@ public class CraneController : MonoBehaviour
                         isSelected ^= true;
                         hasHit = true;
                         if (isSelected)
-                            _state = CraneState.Moving;
+                            OnSelected();
                         else
-                            _state = CraneState.Stopped;
+                            OnDeselected();
                         StartCoroutine(ResetHitFlagAfterSeconds(0.1f));
                     }
                     else
                     {
                         isSelected = false;
+                        OnDeselected();
                     }
                     Debug.Log($"Selected : {isSelected}");
                 }
@@ -346,6 +481,19 @@ public class CraneController : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void OnSelected()
+    {
+        _state = CraneState.Moving;
+        _check.selectedCrane = this;
+        _light.Hightlight(true);
+    }
+
+    private void OnDeselected()
+    {
+        // _state = CraneState.Stopped;
+        _light.Hightlight(false);
     }
 
     IEnumerator ResetHitFlagAfterSeconds(float seconds)

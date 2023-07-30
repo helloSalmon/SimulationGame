@@ -21,7 +21,7 @@ public class SettingContainer : MonoBehaviour
 
     private void CreateContainerLooking()
     {
-        GetComponent<Renderer>().material.color = Managers.Container.colorList[int.Parse(colorCode)];
+        transform.GetChild(0).GetComponent<Renderer>().material.color = Managers.Container.colorList[int.Parse(colorCode)];
 
         //컨테이너 위쪽에 2D Sprite를 넣어서 문양 생성하기
         GetComponentInChildren<SpriteRenderer>().sprite = Managers.Container.GetCompanySprite(companyCode);

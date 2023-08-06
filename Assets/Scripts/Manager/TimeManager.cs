@@ -89,7 +89,7 @@ public class TimeManager : MonoBehaviour
             timer += Time.deltaTime;
 
             //mainTime을 60진법에 맞게 변환 (게임 시간 내 속도로 변환)
-            timeText.text = "현재 시각 : \n" + gameTime.ToString();
+            //timeText.text = "현재 시각 : \n" + gameTime.ToString();
 
             scheduler.cargoEventHandler.UpdateTime(gameTime);
             if (timer > 0.5f)

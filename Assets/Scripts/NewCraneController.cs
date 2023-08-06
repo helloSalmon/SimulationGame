@@ -24,7 +24,7 @@ public class NewCraneController : MonoBehaviour, ICraneController
     float armMinScale = 20.0f;
     float armMaxScale = 50.0f;
     const float hookOffset = 6.0f;
-    Vector3 hookDir = Vector3.forward;
+    public Vector3 hookDir = Vector3.forward;
 
     [SerializeField]
     Transform arm, head, hook, joint;
@@ -36,7 +36,7 @@ public class NewCraneController : MonoBehaviour, ICraneController
     [SerializeField]
     VoxelBuildingSystem buildingSystem;
 
-    bool isSelected = false;
+    public bool isSelected = false;
     bool hasHit = false;
     Vector3 _destPos;
     GameObject plate;
@@ -178,20 +178,20 @@ public class NewCraneController : MonoBehaviour, ICraneController
         _state = CraneState.Moving;
     }
 
-    void UpdateSpinning()
+    public void UpdateSpinning(int rotating = 0)
     {
         joint.rotation = Quaternion.Lerp(joint.rotation, Quaternion.LookRotation(hookDir), rotationSpeed * Time.deltaTime);
 
         if (!isSelected)
             return;
 
-        if (Input.GetKeyDown(KeyCode.C))
+        if (Input.GetKeyDown(KeyCode.C) || rotating == 1)
         {
             joint.DORotateQuaternion(Quaternion.LookRotation(Vector3.forward), 2f);
             hookDir = Vector3.forward;
             // joint.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
         }
-        else if (Input.GetKey(KeyCode.V))
+        else if (Input.GetKey(KeyCode.V) || rotating == 2)
         {
             joint.DORotateQuaternion(Quaternion.LookRotation(Vector3.right), 2f);
             hookDir = Vector3.right;
@@ -424,14 +424,14 @@ public class NewCraneController : MonoBehaviour, ICraneController
         return true;
     }
 
-    void OnKeyPressed()
+    public void OnKeyPressed(int updown = 0)
     {
         Debug.DrawRay(hook.position, -hook.up * 30, Color.red);
         if (container)
             Debug.DrawRay(container.position, -container.up * 30, Color.blue);
-        if (_state == CraneState.Moving && Input.anyKeyDown && isSelected)
+        if (_state == CraneState.Moving && isSelected)
         {
-            if (Input.GetKey(KeyCode.Z))
+            if (Input.GetKey(KeyCode.Z) || updown == 1)
             {
                 if (CanAttach())
                 {
@@ -443,7 +443,7 @@ public class NewCraneController : MonoBehaviour, ICraneController
                     StartCoroutine(GrabContainer());
                 }
             }
-            else if (Input.GetKey(KeyCode.X))
+            else if (Input.GetKey(KeyCode.X) || updown == 2)
             {
                 if (CanDetach())
                 {
@@ -493,14 +493,14 @@ public class NewCraneController : MonoBehaviour, ICraneController
         }
     }
 
-    private void OnSelected()
+    public void OnSelected()
     {
         _state = CraneState.Moving;
         _check.selectedCrane = this;
         _light.Hightlight(true);
     }
 
-    private void OnDeselected()
+    public void OnDeselected()
     {
         _light.Hightlight(false);
     }

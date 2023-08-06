@@ -25,7 +25,7 @@ public class CheckContainer : MonoBehaviour
     private Text declaredGarron;
     private Text declaredCode;
     private Text declaredContent;
-
+    /*
     private void Start()
     {
         Transform realTextList = null;
@@ -112,5 +112,5 @@ public class CheckContainer : MonoBehaviour
         {
             selectedContainer.acceptionState = ContainerDetail.AcceptionState.nonpass;
         }
-    }
+    }*/
 }

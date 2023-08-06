@@ -10,8 +10,12 @@ public class MoveCamera : MonoBehaviour
     private Vector3 prePos;
     private Vector3 camPos;
 
+    private float cameraSpeed = 30;
+
     public Quaternion original;
     bool active = false;
+
+    public Joystick joystick;
 
     private void Awake()
     {
@@ -35,9 +39,9 @@ public class MoveCamera : MonoBehaviour
 
     private void Update()
     {
-        if (EventSystem.current.IsPointerOverGameObject() && active == false)
+        /*if (EventSystem.current.IsPointerOverGameObject() && active == false)
             return;
-
+        
         if (active == false && Input.GetMouseButtonDown(1))
         {
             active = true;
@@ -45,8 +49,9 @@ public class MoveCamera : MonoBehaviour
             camPos = transform.position;
 
             prePos = nowPos = Input.mousePosition;
-        }
-        if(active == true && Input.GetMouseButton(1))
+        }*/
+        //if(active == true && Input.GetMouseButton(1))
+        if(true)
         {
             // prePos = nowPos;
             nowPos = Input.mousePosition;
@@ -68,7 +73,8 @@ public class MoveCamera : MonoBehaviour
             // Invert direction to that terrain appears to move with the mouse.
             //direction = direction * -1;
 
-            Vector3 dir = GetMoveVector(Camera.main.transform, prePos.x - nowPos.x, prePos.y - nowPos.y);
+            //Vector3 dir = GetMoveVector(Camera.main.transform, prePos.x - nowPos.x, prePos.y - nowPos.y);
+            Vector3 dir = GetMoveVector(Camera.main.transform, -joystick.Horizontal, -joystick.Vertical);
             Vector3 direction = dir.normalized;
             float magnitude = dir.magnitude;
             magnitude = Mathf.Clamp(magnitude, 0.0f, 50.0f);
@@ -76,7 +82,7 @@ public class MoveCamera : MonoBehaviour
             //Vector3 dir = new Vector3(prePos.x - nowPos.x, 0, prePos.y - nowPos.y);
 
             //transform.position = new Vector3(camPos.x - direction.x, transform.position.y, camPos.z - direction.y);
-            transform.Translate(-direction * magnitude * Time.deltaTime, Space.World);
+            transform.Translate(-direction * magnitude * Time.deltaTime * cameraSpeed, Space.World);
         }
         if (Input.GetMouseButtonUp(1))
         {
